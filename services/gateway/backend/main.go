@@ -7,8 +7,9 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/static"
 	_ "github.com/lib/pq"
+	"mantevian.xyz/codenames/routes"
+	v1 "mantevian.xyz/codenames/routes/api/v1"
 )
 
 type TestRow struct {
@@ -53,11 +54,15 @@ func main() {
 		return c.SendString(result.String())
 	})
 
-	app.Get("/*", static.New("../frontend/dist", static.Config{
-		Compress:      true,
-		MaxAge:        0,
-		CacheDuration: -1,
-	}))
+	app.Post("/api/v1/register", func(c fiber.Ctx) {
+		v1.Register(c, db)
+	})
+
+	app.Post("/api/v1/login", func(c fiber.Ctx) {
+		v1.Login(c, db)
+	})
+
+	app.Get("/*", routes.Generic())
 
 	log.Fatal(app.Listen(":8080"))
 }
