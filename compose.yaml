@@ -14,7 +14,7 @@ services:
 
   gateway:
     build:
-      context: ./services/gateway-go
+      context: ./services/gateway
       dockerfile: Dockerfile
     container_name: gateway-service
     ports:

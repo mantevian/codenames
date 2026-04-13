@@ -15,7 +15,7 @@ services:
 
   gateway:
     build:
-      context: ./services/gateway-go
+      context: ./services/gateway
       dockerfile: Dockerfile.dev
     container_name: gateway-service-dev
     ports:
@@ -28,8 +28,8 @@ services:
       - GO_ENV=development
       - DEBUG=true
     volumes:
-      - ./services/gateway-go/backend:/app/backend
-      - ./services/gateway-go/frontend:/app/frontend
+      - ./services/gateway/backend:/app/backend
+      - ./services/gateway/frontend:/app/frontend
       - go-mod-cache:/go/pkg/mod
       - node-modules:/app/frontend/node_modules
     networks:
