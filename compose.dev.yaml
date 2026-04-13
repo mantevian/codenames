@@ -1,0 +1,47 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4.2-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    networks:
+      - microservices-network
+
+  gateway:
+    build:
+      context: ./services/gateway-go
+      dockerfile: Dockerfile.dev
+    container_name: gateway-service-dev
+    ports:
+      - "8080:8080"
+      - "2345:2345"
+      - "5173:5173"
+    environment:
+      - PORT=8080
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - GO_ENV=development
+      - DEBUG=true
+    volumes:
+      - ./services/gateway-go/backend:/app/backend
+      - ./services/gateway-go/frontend:/app/frontend
+      - go-mod-cache:/go/pkg/mod
+      - node-modules:/app/frontend/node_modules
+    networks:
+      - microservices-network
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+networks:
+  microservices-network:
+    driver: bridge
+
+volumes:
+  go-mod-cache:
+  node-modules:

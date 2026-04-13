@@ -1,0 +1,15 @@
+FROM golang:1.26-alpine
+
+RUN apk add --no-cache nodejs npm git
+
+RUN go install github.com/air-verse/air@latest
+
+WORKDIR /app
+
+COPY backend/go.mod backend/go.sum ./backend/
+RUN cd backend && go mod download
+
+COPY frontend/package*.json ./frontend/
+RUN cd frontend && npm ci
+
+CMD sh -c "cd /app/frontend && npm run watch & cd /app/backend && air"
