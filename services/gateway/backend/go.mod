@@ -1,4 +1,4 @@
-module mantevian.xyz/codenames
+module mantevian.xyz/codenames/gateway
 
 go 1.26.1
 

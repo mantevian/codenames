@@ -8,8 +8,8 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	_ "github.com/lib/pq"
-	"mantevian.xyz/codenames/routes"
-	v1 "mantevian.xyz/codenames/routes/api/v1"
+	"mantevian.xyz/codenames/gateway/routes"
+	v1 "mantevian.xyz/codenames/gateway/routes/api/v1"
 )
 
 type TestRow struct {
