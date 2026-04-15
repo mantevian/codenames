@@ -1,68 +1,82 @@
 package main
 
 import (
-	"database/sql"
+	"context"
+	"encoding/json"
 	"log"
+	"net/http"
 	"os"
-	"strings"
+	"time"
 
-	"github.com/gofiber/fiber/v3"
-	_ "github.com/lib/pq"
-	"mantevian.xyz/codenames/gateway/routes"
-	v1 "mantevian.xyz/codenames/gateway/routes/api/v1"
+	"mantevian.xyz/codenames/shared/rabbitmq"
+	"mantevian.xyz/codenames/shared/types"
 )
 
-type TestRow struct {
-	id   int
-	text string
+type Gateway struct {
+	rpcClient *rabbitmq.RPCClient
+}
+
+func NewGateway() (*Gateway, error) {
+	client, err := rabbitmq.NewRPCClient(os.Getenv("RABBITMQ_URL"))
+	if err != nil {
+		return nil, err
+	}
+	return &Gateway{rpcClient: client}, nil
+}
+
+func (g *Gateway) Close() {
+	g.rpcClient.Close()
+}
+
+func (g *Gateway) RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req types.RegisterRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	// Call auth service via RPC
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	responseBytes, err := g.rpcClient.Call(ctx, rabbitmq.AuthQueue, "register", req)
+	if err != nil {
+		http.Error(w, "Service unavailable: "+err.Error(), http.StatusServiceUnavailable)
+		return
+	}
+
+	var resp types.RegisterResponse
+	if err := json.Unmarshal(responseBytes, &resp); err != nil {
+		http.Error(w, "Invalid response", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if !resp.Success {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	json.NewEncoder(w).Encode(resp)
 }
 
 func main() {
-	db, err := sql.Open("postgres", os.Getenv("POSTGRES_URL"))
+	gateway, err := NewGateway()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	defer gateway.Close()
 
-	app := fiber.New()
+	http.HandleFunc("/register", gateway.RegisterHandler)
 
-	app.Get("/health", func(c fiber.Ctx) error {
-		if err := db.Ping(); err != nil {
-			return c.Status(503).SendString("Database unavailable")
-		}
-		return c.SendString("OK")
-	})
+	fs := http.FileServer(http.Dir("../frontend/dist"))
+	http.Handle("/", fs)
 
-	app.Get("/test", func(c fiber.Ctx) error {
-		rows, err := db.Query("select * from test")
-		if err != nil {
-			return c.Status(503).SendString("Database unavailable")
-		}
-		defer rows.Close()
-
-		var result strings.Builder
-
-		for rows.Next() {
-			var row TestRow
-			if err := rows.Scan(&row.id, &row.text); err != nil {
-				return c.Status(500).SendString("Error reading data")
-			}
-			result.WriteString(row.text)
-			result.WriteString("\n")
-		}
-
-		return c.SendString(result.String())
-	})
-
-	app.Post("/api/v1/register", func(c fiber.Ctx) {
-		v1.Register(c, db)
-	})
-
-	app.Post("/api/v1/login", func(c fiber.Ctx) {
-		v1.Login(c, db)
-	})
-
-	app.Get("/*", routes.Generic())
-
-	log.Fatal(app.Listen(":8080"))
+	log.Printf("Gateway listening on %s", ":8080")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatal(err)
+	}
 }

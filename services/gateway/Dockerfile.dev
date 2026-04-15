@@ -6,10 +6,13 @@ RUN go install github.com/air-verse/air@latest
 
 WORKDIR /app
 
-COPY backend/go.mod backend/go.sum ./backend/
-RUN cd backend && go mod download
+COPY shared/ /app/shared/
+RUN cd shared && go mod download
 
-COPY frontend/package*.json ./frontend/
-RUN cd frontend && npm ci
+COPY services/gateway/backend/ /app/services/gateway/backend/
+RUN cd services/gateway/backend && go mod download
 
-CMD sh -c "cd /app/frontend && npm run watch & cd /app/backend && air"
+COPY services/gateway/frontend/ /app/services/gateway/frontend/
+RUN cd services/gateway/frontend && npm ci
+
+CMD sh -c "cd /app/services/gateway/frontend && npm run watch & cd /app/services/gateway/backend && air"
