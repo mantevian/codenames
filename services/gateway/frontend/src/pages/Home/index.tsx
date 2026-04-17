@@ -1,21 +1,10 @@
+import LoginForm from "../../components/register/LoginForm";
+import RegisterForm from "../../components/register/RegisterForm";
 import './style.css';
 
 export function Home() {
-	return (
-		<>
-			<p>register</p>
-			<form action="/register" method="post">
-				<input type="text" name="name" required />
-				<input type="password" name="password" required />
-				<input type="submit" />
-			</form>
-
-			<p>login</p>
-			<form action="/api/v1/login" method="post">
-				<input type="text" name="name" required />
-				<input type="password" name="password" required />
-				<input type="submit" />
-			</form>
-		</>
-	);
+	return <>
+		<RegisterForm />
+		<LoginForm />
+	</>;
 }

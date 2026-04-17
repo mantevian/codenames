@@ -80,7 +80,6 @@ func (s *RPCServer) Start() error {
 			response = []byte(`{"error": "` + err.Error() + `"}`)
 		}
 
-		// Send response back
 		err = s.channel.Publish(
 			"",
 			msg.ReplyTo,

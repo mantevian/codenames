@@ -54,7 +54,6 @@ func NewRPCClient(amqpURL string) (*RPCClient, error) {
 		pending: make(map[string]chan []byte),
 	}
 
-	// Start response dispatcher
 	go client.dispatcher()
 
 	return client, nil

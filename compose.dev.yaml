@@ -90,6 +90,7 @@ services:
       RABBITMQ_URL: "amqp://rabbitmq:5672"
       POSTGRES_URL: ${POSTGRES_URL}
       DEBUG: true
+      JWT_SECRET: ${JWT_SECRET}
     volumes:
       - ./services/auth:/app/services/auth
       - ./shared:/app/shared
