@@ -3,6 +3,7 @@ FROM golang:1.26-alpine
 RUN apk add --no-cache nodejs npm git
 
 RUN go install github.com/air-verse/air@latest
+RUN go install github.com/swaggo/swag/cmd/swag@latest
 
 WORKDIR /app
 
@@ -15,4 +16,4 @@ RUN cd services/gateway/backend && go mod download
 COPY services/gateway/frontend/ /app/services/gateway/frontend/
 RUN cd services/gateway/frontend && npm ci
 
-CMD sh -c "cd /app/services/gateway/frontend && npm run watch & cd /app/services/gateway/backend && air"
+CMD sh -c "cd /app/services/gateway/frontend && npm run watch & cd /app/services/gateway/backend && swag init --parseDependency --parseInternal && air"

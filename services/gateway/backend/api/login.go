@@ -7,6 +7,15 @@ import (
 	"mantevian.xyz/codenames/shared/types"
 )
 
+// Login godoc
+// @Summary      Login
+// @Description  Login
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        credentials body     types.LoginRequest   true "Name and password"
+// @Success      200         {object} types.LoginResponse "Login response with token if successful"
+// @Router       /api/v1/login [post]
 func (api *Api) Login(w http.ResponseWriter, r *http.Request) {
 	var req types.LoginRequest
 

@@ -6,8 +6,12 @@ import (
 	"os"
 	"path/filepath"
 
+	_ "mantevian.xyz/codenames/service_gateway/docs"
+
 	"mantevian.xyz/codenames/service_gateway/api"
 	"mantevian.xyz/codenames/service_gateway/gateway"
+
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func main() {
@@ -22,6 +26,8 @@ func main() {
 	http.HandleFunc("POST /api/v1/register", api.Register)
 	http.HandleFunc("POST /api/v1/login", api.Login)
 	http.HandleFunc("POST /api/v1/validate_token", api.Auth(api.Ping))
+
+	http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 
 	distPath := "../frontend/dist"
 	fs := http.FileServer(http.Dir(distPath))
