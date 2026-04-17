@@ -25,7 +25,7 @@ export default function AuthGuard({ path, children }: { path?: string, children?
 				setIsValid(false);
 				route("/");
 			});
-	}, [path]);
+	}, [locationPath]);
 
 	if (isValid === null) {
 		return <div>Checking authentication...</div>;
