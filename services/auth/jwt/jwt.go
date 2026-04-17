@@ -29,6 +29,10 @@ func ValidateToken(tokenString string) (*types.Claims, error) {
 		return jwtSecret, nil
 	})
 
+	if err != nil {
+		return nil, err
+	}
+
 	if claims, ok := token.Claims.(*types.Claims); ok && token.Valid {
 		return claims, nil
 	}

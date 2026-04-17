@@ -5,6 +5,7 @@ import { Header } from "./components/Header.js";
 import { Home } from "./pages/Home/index.js";
 import { NotFound } from "./pages/_404.js";
 import "./style.css";
+import AuthGuard from "./components/auth/Guard.js";
 
 export function App() {
 	return (
@@ -14,6 +15,8 @@ export function App() {
 				<Router>
 					<Route path="/" component={Home} />
 					<Route default component={NotFound} />
+					
+					<AuthGuard path="/secret"><div>secret</div></AuthGuard>
 				</Router>
 			</main>
 		</LocationProvider>

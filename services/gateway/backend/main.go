@@ -19,6 +19,7 @@ func main() {
 
 	http.HandleFunc("POST /api/v1/register", api.Register)
 	http.HandleFunc("POST /api/v1/login", api.Login)
+	http.HandleFunc("POST /api/v1/validate_token", api.Auth(api.Ping))
 
 	fs := http.FileServer(http.Dir("../frontend/dist"))
 	http.Handle("/", fs)

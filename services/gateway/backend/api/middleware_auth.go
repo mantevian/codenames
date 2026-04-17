@@ -26,7 +26,7 @@ func (api *Api) Auth(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		if err != nil {
+		if !resp.Success || err != nil {
 			http.Error(w, "Invalid token", http.StatusUnauthorized)
 			return
 		}

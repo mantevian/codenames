@@ -1,19 +1,22 @@
 import { TargetedEvent } from "preact";
 
 export default function LoginForm() {
-	function onSubmit(e: TargetedEvent<HTMLFormElement, SubmitEvent>) {
+	async function onSubmit(e: TargetedEvent<HTMLFormElement, SubmitEvent>) {
 		e.preventDefault();
 		const form = e.currentTarget;
 		const formData = new FormData(form);
 		const entries = Object.fromEntries(formData.entries());
 
-		fetch(form.action, {
+		const res = await fetch(form.action, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(entries)
 		});
+
+		const { token } = await res.json();
+		localStorage.setItem("token", token);
 	}
 
 	return <>

@@ -1,5 +1,5 @@
-import LoginForm from "../../components/register/LoginForm";
-import RegisterForm from "../../components/register/RegisterForm";
+import LoginForm from "../../components/auth/LoginForm";
+import RegisterForm from "../../components/auth/RegisterForm";
 import './style.css';
 
 export function Home() {
