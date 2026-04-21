@@ -1,4 +1,4 @@
-package api
+package handlers
 
 import "mantevian.xyz/codenames/service_gateway/gateway"
 

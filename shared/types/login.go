@@ -7,8 +7,8 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	Success bool   `json:"success"`
-	UserID  string `json:"user_id"`
 	Message string `json:"message"`
+	UserId  Uuid   `json:"user_id"`
 	Token   string `json:"token"`
 }
 

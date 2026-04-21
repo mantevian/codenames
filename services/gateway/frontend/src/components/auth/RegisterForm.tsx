@@ -17,11 +17,14 @@ export default function RegisterForm() {
 	}
 
 	return <>
-		<form action="/api/v1/register" method="post" onSubmit={onSubmit}>
-			<input type="text" name="name" required />
-			<input type="password" name="password" required />
-			<input type="password" name="password_confirm" required />
-			<input type="submit" />
-		</form>
+		<section id="register">
+			<h2>Register</h2>
+			<form action="/api/v1/register" method="post" onSubmit={onSubmit}>
+				<input type="text" name="name" required />
+				<input type="password" name="password" required />
+				<input type="password" name="password_confirm" required />
+				<input type="submit" />
+			</form>
+		</section>
 	</>;
 }

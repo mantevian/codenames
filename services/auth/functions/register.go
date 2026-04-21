@@ -37,7 +37,7 @@ func Register(payload []byte, db *sql.DB) types.RegisterResponse {
 
 	return types.RegisterResponse{
 		Success:   true,
-		UserID:    user.Id,
+		UserId:    user.Id,
 		Message:   "User registered successfully",
 		CreatedAt: user.CreatedAt,
 	}

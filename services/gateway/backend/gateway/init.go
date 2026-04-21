@@ -24,11 +24,11 @@ func (g *Gateway) Close() {
 	g.rpcClient.Close()
 }
 
-func (g *Gateway) Call(action string, payload any) ([]byte, error) {
+func (g *Gateway) Call(queue string, action string, payload any) ([]byte, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	responseBytes, err := g.rpcClient.Call(ctx, rabbitmq.AuthQueue, action, payload)
+	responseBytes, err := g.rpcClient.Call(ctx, queue, action, payload)
 
 	if err != nil {
 		return nil, err

@@ -1,6 +1,6 @@
 import { TargetedEvent } from "preact";
 
-export default function LoginForm() {
+export default function CreateGameForm() {
 	async function onSubmit(e: TargetedEvent<HTMLFormElement, SubmitEvent>) {
 		e.preventDefault();
 		const form = e.currentTarget;
@@ -11,20 +11,20 @@ export default function LoginForm() {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
+				"Authorization": `Bearer ${localStorage.getItem("token")}`,
 			},
 			body: JSON.stringify(entries)
 		});
-
-		const { token } = await res.json();
-		localStorage.setItem("token", token);
 	}
 
 	return <>
-		<section id="login">
-			<h2>Login</h2>
-			<form action="/api/v1/login" method="post" onSubmit={onSubmit}>
-				<input type="text" name="name" required />
-				<input type="password" name="password" required />
+		<section id="create-game">
+			<h2>Create game</h2>
+			<form action="/api/v1/create_game" method="post" onSubmit={onSubmit}>
+				<select name="language">
+					<option value="en">English</option>
+					<option value="ru">Русский</option>
+				</select>
 				<input type="submit" />
 			</form>
 		</section>

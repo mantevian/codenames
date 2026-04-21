@@ -41,7 +41,7 @@ func Login(payload []byte, db *sql.DB) types.LoginResponse {
 
 	return types.LoginResponse{
 		Success: true,
-		UserID:  user.Id,
+		UserId:  user.Id,
 		Message: "User logged in successfully",
 		Token:   token,
 	}

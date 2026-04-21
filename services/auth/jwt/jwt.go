@@ -10,7 +10,7 @@ import (
 
 var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
-func GenerateToken(userId string, name string) (string, error) {
+func GenerateToken(userId types.Uuid, name string) (string, error) {
 	claims := types.Claims{
 		UserId: userId,
 		Name:   name,

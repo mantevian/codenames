@@ -7,9 +7,11 @@ import (
 	"path/filepath"
 
 	_ "mantevian.xyz/codenames/service_gateway/docs"
+	"mantevian.xyz/codenames/service_gateway/handlers/game"
+	"mantevian.xyz/codenames/service_gateway/middleware"
 
-	"mantevian.xyz/codenames/service_gateway/api"
 	"mantevian.xyz/codenames/service_gateway/gateway"
+	"mantevian.xyz/codenames/service_gateway/handlers"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -21,11 +23,13 @@ func main() {
 	}
 	defer gateway.Close()
 
-	var api = api.Api{Gateway: gateway}
+	var api = handlers.Api{Gateway: gateway}
 
-	http.HandleFunc("POST /api/v1/register", api.Register)
-	http.HandleFunc("POST /api/v1/login", api.Login)
-	http.HandleFunc("POST /api/v1/validate_token", api.Auth(api.Ping))
+	http.HandleFunc("POST /api/v1/register", handlers.Register(api))
+	http.HandleFunc("POST /api/v1/login", handlers.Login(api))
+	http.HandleFunc("POST /api/v1/validate_token", middleware.Auth(api)(handlers.Ping(api)))
+	http.HandleFunc("POST /api/v1/create_game", middleware.Auth(api)(game.CreateGame(api)))
+	http.HandleFunc("POST /api/v1/get_waiting_game_list", middleware.Auth(api)(game.GetWaitingGameList(api)))
 
 	http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 

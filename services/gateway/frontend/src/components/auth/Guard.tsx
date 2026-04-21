@@ -12,9 +12,9 @@ export default function AuthGuard({ path, children }: { path?: string, children?
 				"Authorization": `Bearer ${localStorage.getItem("token")}`
 			}
 		})
-			.then(res => res.text())
-			.then(response => {
-				if (response === "ok") {
+			.then(res => res.json())
+			.then(json => {
+				if (json.success) {
 					setIsValid(true);
 				} else {
 					setIsValid(false);

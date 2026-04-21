@@ -10,8 +10,8 @@ type RegisterRequest struct {
 
 type RegisterResponse struct {
 	Success   bool      `json:"success"`
-	UserID    string    `json:"user_id"`
 	Message   string    `json:"message"`
+	UserId    Uuid      `json:"user_id"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
