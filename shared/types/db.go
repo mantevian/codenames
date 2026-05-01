@@ -30,7 +30,7 @@ type Player struct {
 	UserId  Uuid       `json:"user_id"`
 	GameId  Uuid       `json:"game_id"`
 	Team    enums.Team `json:"team"`
-	Role    enums.Role `json:"Role"`
+	Role    enums.Role `json:"role"`
 	IsReady bool       `json:"is_ready"`
 }
 
