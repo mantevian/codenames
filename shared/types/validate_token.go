@@ -8,7 +8,9 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-type ValidateTokenRequest string
+type ValidateTokenRequest struct {
+	Token string `json:"token"`
+}
 
 type ValidateTokenResponse struct {
 	Success bool   `json:"success"`

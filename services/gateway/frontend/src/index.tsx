@@ -5,22 +5,26 @@ import { Header } from "./components/Header.js";
 import { Home } from "./pages/Home/index.js";
 import { NotFound } from "./pages/_404.js";
 import "./style.css";
-import AuthGuard from "./components/auth/Guard.js";
+import AuthGuard from "./components/auth/AuthGuard.js";
+import { WebSocketProvider } from "./components/WebSocketProvider.js";
 
 export function App() {
 	return (
 		<LocationProvider>
-			<Header />
-			<main>
-				<Router>
-					<Route path="/" component={Home} />
-					<Route default component={NotFound} />
-					
-					<AuthGuard path="/secret"><div>secret</div></AuthGuard>
-				</Router>
-			</main>
+			<WebSocketProvider>
+				<Header />
+				<main>
+					<Router>
+						<Route path="/" component={Home} />
+						
+						<AuthGuard path="/secret"><div>secret</div></AuthGuard>
+						
+						<Route default component={NotFound} />
+					</Router>
+				</main>
+			</WebSocketProvider>
 		</LocationProvider>
 	);
 }
 
-render(<App />, document.getElementById("app"));
+render(<App />, document.getElementById("app")!);

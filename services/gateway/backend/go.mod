@@ -18,6 +18,7 @@ require (
 	github.com/go-openapi/swag/typeutils v0.26.0 // indirect
 	github.com/go-openapi/swag/yamlutils v0.26.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
+	github.com/gorilla/websocket v1.5.3
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.9.2 // indirect
 	github.com/rabbitmq/amqp091-go v1.10.0 // indirect

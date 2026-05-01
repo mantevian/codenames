@@ -1,18 +1,19 @@
 import { TargetedEvent } from "preact";
+import { useContext } from "preact/hooks";
+import { WSContext } from "../WebSocketProvider";
 
 export default function RegisterForm() {
-	function onSubmit(e: TargetedEvent<HTMLFormElement, SubmitEvent>) {
+	const ws = useContext(WSContext);
+
+	async function onSubmit(e: TargetedEvent<HTMLFormElement, SubmitEvent>) {
 		e.preventDefault();
 		const form = e.currentTarget;
 		const formData = new FormData(form);
 		const entries = Object.fromEntries(formData.entries());
 
-		fetch(form.action, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(entries)
+		const res = await ws.request({
+			action: "register",
+			payload: entries
 		});
 	}
 

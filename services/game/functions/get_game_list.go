@@ -7,7 +7,7 @@ import (
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func GetWaitingGameList(db *sql.DB) types.GetWaitingGameListResponse {
+func GetGameList(db *sql.DB) types.GetGameListResponse {
 	rows, err := db.Query(`
 		select
 			id,
@@ -21,7 +21,7 @@ func GetWaitingGameList(db *sql.DB) types.GetWaitingGameListResponse {
 	)
 
 	if err != nil {
-		return types.GetWaitingGameListError("no games :(")
+		return types.GetGameListError("no games :(")
 	}
 
 	var games []types.BasicGameResponse
@@ -33,7 +33,7 @@ func GetWaitingGameList(db *sql.DB) types.GetWaitingGameListResponse {
 		games = append(games, game)
 	}
 
-	return types.GetWaitingGameListResponse{
+	return types.GetGameListResponse{
 		Success: true,
 		Games:   games,
 	}

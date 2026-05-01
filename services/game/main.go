@@ -19,8 +19,8 @@ func HandleRPC(action string, payload []byte) ([]byte, error) {
 	case "create_game":
 		res := functions.CreateGame(payload, db)
 		return json.Marshal(res)
-	case "get_waiting_game_list":
-		res := functions.GetWaitingGameList(db)
+	case "get_game_list":
+		res := functions.GetGameList(db)
 		return json.Marshal(res)
 	default:
 		return nil, fmt.Errorf("unknown action: %s", action)

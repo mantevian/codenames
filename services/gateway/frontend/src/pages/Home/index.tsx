@@ -1,7 +1,7 @@
 import LoginForm from "../../components/auth/LoginForm";
 import RegisterForm from "../../components/auth/RegisterForm";
 import CreateGameForm from "../../components/CreateGameForm";
-import WaitinGameList from "../../components/WaitingGameList";
+import GameList from "../../components/GameList";
 import './style.css';
 
 export function Home() {
@@ -9,6 +9,6 @@ export function Home() {
 		<RegisterForm />
 		<LoginForm />
 		<CreateGameForm />
-		<WaitinGameList />
+		<GameList />
 	</>;
 }

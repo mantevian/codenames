@@ -1,16 +1,16 @@
 package types
 
-type GetWaitingGameListRequest struct {
+type GetGameListRequest struct {
 }
 
-type GetWaitingGameListResponse struct {
+type GetGameListResponse struct {
 	Success bool                `json:"success"`
 	Message string              `json:"message"`
 	Games   []BasicGameResponse `json:"games"`
 }
 
-func GetWaitingGameListError(message string) GetWaitingGameListResponse {
-	return GetWaitingGameListResponse{
+func GetGameListError(message string) GetGameListResponse {
+	return GetGameListResponse{
 		Success: false,
 		Message: message,
 	}

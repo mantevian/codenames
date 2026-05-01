@@ -8,9 +8,9 @@ import (
 )
 
 func ValidateToken(payload []byte) types.ValidateTokenResponse {
-	var token string
-	json.Unmarshal(payload, &token)
-	claims, err := jwt.ValidateToken(token)
+	var req types.ValidateTokenRequest
+	json.Unmarshal(payload, &req)
+	claims, err := jwt.ValidateToken(req.Token)
 
 	if err != nil {
 		return types.ValidateTokenFalse()
