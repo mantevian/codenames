@@ -12,7 +12,7 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 	var req types.JoinGameRequest
 	err := json.Unmarshal(payload, &req)
 	if err != nil {
-		return types.JoinGameError(err.Error())
+		return types.JoinGameError("can't parse request")
 	}
 
 	var gameId types.Uuid
@@ -24,13 +24,23 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 
 	rows, err := db.Query(`
 			select
-				games.id,
-				players.team
+				id
 			from games
 			where join_code = $1
-			inner join players on games.id = players.game_id
 		`,
 		req.JoinCode,
+	)
+	rows.Next()
+	rows.Scan(&gameId)
+
+	rows, err = db.Query(`
+			select
+				user_id,
+				team
+			from players
+			where game_id = $1
+		`,
+		gameId,
 	)
 
 	if err != nil {
@@ -38,12 +48,15 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 	}
 
 	for rows.Next() {
-		var playerGameId types.Uuid
+		var playerUserId types.Uuid
 		var playerTeam enums.Team
 
-		rows.Scan(&playerGameId, &playerTeam)
+		rows.Scan(&playerUserId, &playerTeam)
 
-		gameId = playerGameId
+		if playerUserId == req.UserId {
+			return types.JoinGameError("you are already in this game")
+		}
+
 		switch playerTeam {
 		case enums.TeamRed:
 			redPlayers++
@@ -64,7 +77,7 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 		insert into players
 			(
 				id,
-				game_id
+				game_id,
 				user_id,
 				team,
 				role,

@@ -10,6 +10,7 @@ import (
 	_ "github.com/lib/pq"
 	"mantevian.xyz/codenames/service_game/functions"
 	"mantevian.xyz/codenames/shared/rabbitmq"
+	"mantevian.xyz/codenames/shared/types"
 )
 
 var db *sql.DB
@@ -22,8 +23,12 @@ func HandleRPC(action string, payload []byte) ([]byte, error) {
 	case "get_game_list":
 		res := functions.GetGameList(db)
 		return json.Marshal(res)
+	case "join_game":
+		res := functions.JoinGame(payload, db)
+		return json.Marshal(res)
 	default:
-		return nil, fmt.Errorf("unknown action: %s", action)
+		res := types.GenericResponseError(fmt.Sprintf("unknown rpc action %s", action))
+		return json.Marshal(res)
 	}
 }
 

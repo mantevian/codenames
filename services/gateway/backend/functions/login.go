@@ -12,12 +12,12 @@ func Login(api api.Api, req types.LoginRequest) types.LoginResponse {
 	responseBytes, err := api.Gateway.Call(rabbitmq.AuthQueue, "login", req)
 
 	if err != nil {
-		return types.LoginError("")
+		return types.LoginError("login: can't call")
 	}
 
 	var resp types.LoginResponse
 	if err := json.Unmarshal(responseBytes, &resp); err != nil {
-		return types.LoginError("")
+		return types.LoginError("login: call error")
 	}
 
 	return resp

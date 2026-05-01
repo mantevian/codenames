@@ -12,12 +12,12 @@ func JoinGame(api api.Api, req types.JoinGameRequest) types.JoinGameResponse {
 	responseBytes, err := api.Gateway.Call(rabbitmq.GameQueue, "join_game", req)
 
 	if err != nil {
-		return types.JoinGameError("")
+		return types.JoinGameError("join_game: can't call")
 	}
 
 	var resp types.JoinGameResponse
 	if err := json.Unmarshal(responseBytes, &resp); err != nil {
-		return types.JoinGameError("")
+		return types.JoinGameError("join_game: response error")
 	}
 
 	return resp

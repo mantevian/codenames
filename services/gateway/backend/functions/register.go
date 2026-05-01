@@ -16,12 +16,12 @@ func Register(api api.Api, req types.RegisterRequest) types.RegisterResponse {
 	responseBytes, err := api.Gateway.Call(rabbitmq.AuthQueue, "register", req)
 
 	if err != nil {
-		return types.RegisterError("")
+		return types.RegisterError("register: call error")
 	}
 
 	var resp types.RegisterResponse
 	if err := json.Unmarshal(responseBytes, &resp); err != nil {
-		return types.RegisterError("")
+		return types.RegisterError("register: response error")
 	}
 
 	return resp
