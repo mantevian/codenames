@@ -54,7 +54,9 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 		rows.Scan(&playerUserId, &playerTeam)
 
 		if playerUserId == req.UserId {
-			return types.JoinGameError("you are already in this game")
+			return types.JoinGameResponse{
+				Success: true,
+			}
 		}
 
 		switch playerTeam {

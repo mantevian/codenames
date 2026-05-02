@@ -5,8 +5,12 @@ import { Header } from "./components/Header.js";
 import { Home } from "./pages/Home/index.js";
 import { NotFound } from "./pages/_404.js";
 import "./style.css";
-import AuthGuard from "./components/auth/AuthGuard.js";
+import RouteAuthGuard from "./components/auth/RouteAuthGuard.js";
 import { WebSocketProvider } from "./components/WebSocketProvider.js";
+import LoginForm from "./components/auth/LoginForm.js";
+import RegisterForm from "./components/auth/RegisterForm.js";
+import { Lobby } from "./pages/Lobby/index.js";
+import GameLobby from "./pages/GameLobby/index.js";
 
 export function App() {
 	return (
@@ -16,8 +20,13 @@ export function App() {
 				<main>
 					<Router>
 						<Route path="/" component={Home} />
+						<Route path="/login" component={LoginForm} />
+						<Route path="/register" component={RegisterForm} />
 						
-						<AuthGuard path="/secret"><div>secret</div></AuthGuard>
+						<RouteAuthGuard path="/lobby"><Lobby /></RouteAuthGuard>
+						<RouteAuthGuard path="/game/:code"><GameLobby /></RouteAuthGuard>
+						
+						<RouteAuthGuard path="/secret"><div>secret</div></RouteAuthGuard>
 						
 						<Route default component={NotFound} />
 					</Router>

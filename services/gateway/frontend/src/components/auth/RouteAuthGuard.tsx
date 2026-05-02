@@ -4,7 +4,8 @@ import { WSContext, wsReady } from "../WebSocketProvider";
 
 type AuthStatus = "waiting" | "success" | "fail";
 
-export default function AuthGuard({ children }: { children?: any }) {
+export default function RouteAuthGuard({ path, children }: { path?: string, children?: any }) {
+	const { path: locationPath, route } = useLocation();
 	const [status, setStatus] = useState<AuthStatus>("waiting");
 	const ws = useContext(WSContext);
 
@@ -19,16 +20,22 @@ export default function AuthGuard({ children }: { children?: any }) {
 					setStatus("success");
 				} else {
 					setStatus("fail");
+					route("/");
 				}
 			}).catch(() => {
 				setStatus("fail");
+				route("/");
 			});
 		}).catch(() => {
 			setStatus("fail");
+			route("/");
 		});
-	}, []);
+	}, [locationPath]);
 
 	switch (status) {
+		case "waiting":
+			return <div>Checking authentication...</div>;
+
 		case "success":
 			return children;
 

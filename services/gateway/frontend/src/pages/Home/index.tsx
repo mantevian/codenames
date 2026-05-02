@@ -1,14 +1,15 @@
-import LoginForm from "../../components/auth/LoginForm";
-import RegisterForm from "../../components/auth/RegisterForm";
-import CreateGameForm from "../../components/CreateGameForm";
-import GameList from "../../components/GameList";
+import AuthGuard from "../../components/auth/AuthGuard";
 import './style.css';
 
 export function Home() {
 	return <>
-		<RegisterForm />
-		<LoginForm />
-		<CreateGameForm />
-		<GameList />
+		<h1>codenames</h1>
+
+		<a href="/login">login</a>
+		<a href="/register">register</a>
+
+		<AuthGuard>
+			<a href="/lobby">lobby</a>
+		</AuthGuard>
 	</>;
 }

@@ -1,4 +1,5 @@
 import { useLocation } from 'preact-iso';
+import AuthGuard from "./auth/AuthGuard";
 
 export function Header() {
 	const { url } = useLocation();
@@ -9,12 +10,10 @@ export function Header() {
 				<a href="/" class={url == '/' ? 'active' : ''}>
 					Home
 				</a>
-				<a href="/404" class={url == '/404' ? 'active' : ''}>
-					404
-				</a>
-				<a href="/secret" class={url == '/secret' ? 'active' : ''}>
-					secret
-				</a>
+				
+				<AuthGuard>
+					<p>Welcome, {localStorage.getItem("username")}</p>
+				</AuthGuard>
 			</nav>
 		</header>
 	);

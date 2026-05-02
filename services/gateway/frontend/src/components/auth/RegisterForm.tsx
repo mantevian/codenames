@@ -26,6 +26,8 @@ export default function RegisterForm() {
 				<input type="password" name="password_confirm" required />
 				<input type="submit" />
 			</form>
+
+			<p>already have an account? <a href="/login">login</a></p>
 		</section>
 	</>;
 }
