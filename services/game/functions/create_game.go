@@ -12,7 +12,7 @@ func CreateGame(payload []byte, db *sql.DB) types.CreateGameResponse {
 	var req types.CreateGameRequest
 	err := json.Unmarshal(payload, &req)
 	if err != nil {
-		return types.CreateGameError(err.Error())
+		return types.CreateGameError("can't parse request")
 	}
 
 	rows, err := db.Query(`

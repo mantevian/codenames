@@ -8,6 +8,7 @@ import (
 
 	"mantevian.xyz/codenames/service_gateway/api"
 	_ "mantevian.xyz/codenames/service_gateway/docs"
+	"mantevian.xyz/codenames/service_gateway/ws"
 
 	"mantevian.xyz/codenames/service_gateway/gateway"
 	"mantevian.xyz/codenames/service_gateway/handlers"
@@ -24,7 +25,9 @@ func main() {
 
 	var api = api.Api{Gateway: gateway}
 
-	http.HandleFunc("/ws", handlers.Ws(api))
+	wsHub := ws.NewHub()
+
+	http.HandleFunc("/ws", handlers.Ws(api, wsHub))
 
 	http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 

@@ -32,6 +32,7 @@ type Player struct {
 	Team    enums.Team `json:"team"`
 	Role    enums.Role `json:"role"`
 	IsReady bool       `json:"is_ready"`
+	Name    string     `json:"name"`
 }
 
 type Tile struct {

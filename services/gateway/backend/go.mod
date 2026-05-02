@@ -4,6 +4,8 @@ go 1.26.2
 
 require mantevian.xyz/codenames/shared v0.0.0
 
+require github.com/google/uuid v1.6.0 // indirect
+
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/go-openapi/jsonpointer v0.23.0 // indirect

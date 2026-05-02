@@ -69,6 +69,7 @@ export function WebSocketProvider({ children }: Props) {
 
 		ws.addEventListener("message", (ev) => {
 			const data: Message = JSON.parse(ev.data);
+			console.log(`incoming:`, data);
 
 			if (!data || typeof data.action !== "string") return;
 
@@ -120,6 +121,7 @@ export function WebSocketProvider({ children }: Props) {
 	const send = (msg: Message) => {
 		if (ws && ws.readyState === WebSocket.OPEN) {
 			try {
+				console.log("sent:", msg);
 				ws.send(JSON.stringify({
 					...msg,
 					token: localStorage.getItem("token")

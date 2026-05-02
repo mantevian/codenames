@@ -15,7 +15,6 @@ export default function AuthGuard({ children }: { children?: any }) {
 			}).then(msg => {
 				const success = msg.payload.success === true;
 				if (success) {
-					console.log(msg);
 					setStatus("success");
 				} else {
 					setStatus("fail");

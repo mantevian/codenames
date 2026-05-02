@@ -1,6 +1,7 @@
 package types
 
 type GetGamePlayerListRequest struct {
+	JoinCode JoinCode `json:"join_code"`
 }
 
 type GetGamePlayerListResponse struct {

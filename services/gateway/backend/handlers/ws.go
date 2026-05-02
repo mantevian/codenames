@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"mantevian.xyz/codenames/service_gateway/api"
 	"mantevian.xyz/codenames/service_gateway/functions"
 	"mantevian.xyz/codenames/service_gateway/functions/game"
 	"mantevian.xyz/codenames/service_gateway/util"
+	"mantevian.xyz/codenames/service_gateway/ws"
 	"mantevian.xyz/codenames/shared/types"
 )
 
@@ -19,14 +21,23 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func Ws(api api.Api) http.HandlerFunc {
+func Ws(api api.Api, hub *ws.Hub) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			util.GenericResponse(w, http.StatusInternalServerError, types.GenericResponseError("Server error"))
 			return
 		}
+
+		id := uuid.New().String()
+
+		hub.AddClient("", &ws.Client{
+			Id:   id,
+			Conn: conn,
+		})
+
 		defer conn.Close()
+		defer hub.RemoveClient(id)
 
 		for {
 			_, bytes, err := conn.ReadMessage()
@@ -76,7 +87,20 @@ func Ws(api api.Api) http.HandlerFunc {
 					var req types.JoinGameRequest
 					json.Unmarshal(message.Payload, &req)
 					req.UserId = userId
-					res = game.JoinGame(api, req)
+					joinGameRes := game.JoinGame(api, req)
+					res = joinGameRes
+
+					if joinGameRes.Success {
+						hub.MoveClient(id, req.JoinCode)
+						playerListRes := game.GetGamePlayersList(
+							api,
+							types.GetGamePlayerListRequest{
+								JoinCode: req.JoinCode,
+							},
+						)
+						json, _ := json.Marshal(playerListRes)
+						hub.Broadcast(req.JoinCode, "update_player_list", json)
+					}
 				}
 			}
 
@@ -89,7 +113,6 @@ func Ws(api api.Api) http.HandlerFunc {
 			responseJson, _ := json.Marshal(response)
 			fmt.Println("response:", string(responseJson))
 
-			// response, _ := json.Marshal(res)
 			if err := conn.WriteMessage(websocket.TextMessage, responseJson); err != nil {
 				break
 			}

@@ -16,20 +16,22 @@ import (
 var db *sql.DB
 
 func HandleRPC(action string, payload []byte) ([]byte, error) {
+	var res any
+
 	switch action {
 	case "create_game":
-		res := functions.CreateGame(payload, db)
-		return json.Marshal(res)
+		res = functions.CreateGame(payload, db)
 	case "get_game_list":
-		res := functions.GetGameList(db)
-		return json.Marshal(res)
+		res = functions.GetGameList(db)
 	case "join_game":
-		res := functions.JoinGame(payload, db)
-		return json.Marshal(res)
+		res = functions.JoinGame(payload, db)
+	case "get_game_player_list":
+		res = functions.GetGamePlayerList(payload, db)
 	default:
-		res := types.GenericResponseError(fmt.Sprintf("unknown rpc action %s", action))
-		return json.Marshal(res)
+		res = types.GenericResponseError(fmt.Sprintf("unknown rpc action %s", action))
 	}
+
+	return json.Marshal(res)
 }
 
 func main() {

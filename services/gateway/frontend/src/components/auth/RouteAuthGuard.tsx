@@ -16,7 +16,6 @@ export default function RouteAuthGuard({ path, children }: { path?: string, chil
 			}).then(msg => {
 				const success = msg.payload.success === true;
 				if (success) {
-					console.log(msg);
 					setStatus("success");
 				} else {
 					setStatus("fail");

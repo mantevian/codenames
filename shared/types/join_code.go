@@ -4,7 +4,7 @@ import (
 	"math/rand/v2"
 )
 
-type JoinCode string
+type JoinCode = string
 
 func NewJoinCode() JoinCode {
 	a := byte(rand.Int()%26 + 'a')
@@ -12,5 +12,5 @@ func NewJoinCode() JoinCode {
 	c := byte(rand.Int()%26 + 'a')
 	d := byte(rand.Int()%26 + 'a')
 
-	return JoinCode(string([]byte{a, b, c, d}))
+	return string([]byte{a, b, c, d})
 }
