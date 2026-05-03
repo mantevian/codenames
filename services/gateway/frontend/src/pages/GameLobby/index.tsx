@@ -10,6 +10,7 @@ export default function GameLobby() {
 	const { route } = useLocation();
 	const ws = useContext(WSContext);
 	const [joined, setJoined] = useState<JoinStatus>("waiting");
+	const [startResponse, setStartResponse] = useState("");
 
 	useEffect(() => {
 		ws.request({
@@ -23,6 +24,10 @@ export default function GameLobby() {
 
 		ws.on("update_player_list", (msg: Message) => {
 			Storage.players.value = msg.payload.players;
+		});
+
+		ws.on("game_started", () => {
+			route(`/room/${params.code}/game`);
 		});
 	}, []);
 
@@ -42,6 +47,8 @@ export default function GameLobby() {
 			payload: {
 				"player_id": Me.value?.id,
 			}
+		}).then(res => {
+			setStartResponse(res.payload.message);
 		});
 	}
 
@@ -86,6 +93,8 @@ export default function GameLobby() {
 				</ul>
 
 				<button onClick={startGame}>start</button>
+
+				<p>{startResponse}</p>
 			</section>;
 
 		default:

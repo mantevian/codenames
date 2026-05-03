@@ -143,6 +143,7 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 
 					if startGameRes.Success {
 						UpdatePlayerListByPlayerId(api, hub, req.PlayerId)
+						hub.Broadcast(startGameRes.Game.JoinCode, "game_started", []byte("{}"))
 					}
 				}
 			}

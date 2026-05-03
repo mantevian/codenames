@@ -5,8 +5,9 @@ type StartGameRequest struct {
 }
 
 type StartGameResponse struct {
-	Success bool   `json:"success"`
-	Message string `json:"message"`
+	Success bool              `json:"success"`
+	Message string            `json:"message"`
+	Game    BasicGameResponse `json:"game"`
 }
 
 func StartGameError(message string) StartGameResponse {

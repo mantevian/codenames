@@ -67,6 +67,10 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 		}
 	}
 
+	if redPlayers+bluePlayers == 4 {
+		return types.JoinGameError("max 4 players")
+	}
+
 	if redPlayers > bluePlayers {
 		team = enums.TeamBlue
 	} else if redPlayers < bluePlayers {

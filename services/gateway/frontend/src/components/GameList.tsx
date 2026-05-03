@@ -26,7 +26,7 @@ export default function GameList() {
 			<ul>
 				{games.value ? games.value.map(game => (
 					<li>
-						{game.join_code} ({game.language}) <a href={`/game/${game.join_code}`}>join</a>
+						{game.join_code} ({game.language}) <a href={`/room/${game.join_code}`}>join</a>
 					</li>
 				)) : <li>
 					<p>No games</p>

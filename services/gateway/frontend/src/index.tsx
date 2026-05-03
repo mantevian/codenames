@@ -11,6 +11,7 @@ import LoginForm from "./components/auth/LoginForm.js";
 import RegisterForm from "./components/auth/RegisterForm.js";
 import { Lobby } from "./pages/Lobby/index.js";
 import GameLobby from "./pages/GameLobby/index.js";
+import Game from "./pages/Game/index.js";
 
 export function App() {
 	return (
@@ -24,7 +25,8 @@ export function App() {
 						<Route path="/register" component={RegisterForm} />
 						
 						<RouteAuthGuard path="/lobby" component={Lobby} />
-						<RouteAuthGuard path="/game/:code" component={GameLobby} />
+						<RouteAuthGuard path="/room/:code" component={GameLobby} />
+						<RouteAuthGuard path="/room/:code/game" component={Game} />
 						
 						<Route default component={NotFound} />
 					</Router>

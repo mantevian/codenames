@@ -18,15 +18,17 @@ func StartGame(payload []byte, db *sql.DB) types.StartGameResponse {
 		return types.StartGameError("can't parse request")
 	}
 
-	var gameId string
-	var startingTeam enums.Team
-	var language enums.Language
+	var game types.BasicGameResponse
+	var playersReady []bool
 
 	rows, err := db.Query(`
 		select
 			games.id,
 			games.starting_team,
-			games.language
+			games.join_code,
+			games.language,
+			games.status,
+			games.created_at
 		from games
 		inner join players on players.game_id = games.id
 		where
@@ -40,12 +42,43 @@ func StartGame(payload []byte, db *sql.DB) types.StartGameResponse {
 	}
 
 	rows.Next()
-	rows.Scan(&gameId, &startingTeam, &language)
+	rows.Scan(&game.Id, &game.StartingTeam, &game.JoinCode, &game.Language, &game.Status, &game.CreatedAt)
+
+	if game.Status != enums.GameStatusWaiting {
+		return types.StartGameError("game already started")
+	}
+
+	rows, err = db.Query(`
+		select
+			is_ready
+		from players
+		where game_id = $1
+		`,
+		game.Id,
+	)
+
+	if err != nil {
+		return types.StartGameError("can't find players in game")
+	}
+
+	for rows.Next() {
+		var ready bool
+		rows.Scan(&ready)
+		playersReady = append(playersReady, ready)
+
+		if !ready {
+			return types.StartGameError("not all players are ready to start")
+		}
+	}
+
+	if len(playersReady) != 4 {
+		return types.StartGameError("need 4 players to start")
+	}
 
 	redTiles := 8
 	blueTiles := 8
 
-	switch startingTeam {
+	switch game.StartingTeam {
 	case enums.TeamRed:
 		redTiles = 9
 	case enums.TeamBlue:
@@ -62,7 +95,7 @@ func StartGame(payload []byte, db *sql.DB) types.StartGameResponse {
 		order by random()
 		limit 25
 		`,
-		language,
+		game.Language,
 	)
 
 	if err != nil {
@@ -87,7 +120,7 @@ func StartGame(payload []byte, db *sql.DB) types.StartGameResponse {
 			fmt.Sprintf(
 				"(%d, '%s', '%s', %t, '%s')",
 				i,
-				gameId,
+				game.Id,
 				tile,
 				false,
 				word,
@@ -122,7 +155,7 @@ func StartGame(payload []byte, db *sql.DB) types.StartGameResponse {
 		set role = 'spymaster'
 		where id in (select id from chosen)
 	`,
-		gameId,
+		game.Id,
 	)
 
 	_, err = db.Exec(`
@@ -132,7 +165,7 @@ func StartGame(payload []byte, db *sql.DB) types.StartGameResponse {
 		where
 			id = $1
 		`,
-		gameId,
+		game.Id,
 	)
 
 	if err != nil {
@@ -141,5 +174,6 @@ func StartGame(payload []byte, db *sql.DB) types.StartGameResponse {
 
 	return types.StartGameResponse{
 		Success: true,
+		Game:    game,
 	}
 }
