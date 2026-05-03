@@ -44,7 +44,7 @@ func Ws(api api.Api, hub *ws.Hub) http.HandlerFunc {
 			if err != nil {
 				break
 			}
-			fmt.Println(">>>", string(bytes))
+			fmt.Println("incoming >>", string(bytes))
 
 			var message types.WsMessage
 			json.Unmarshal(bytes, &message)

@@ -124,7 +124,7 @@ export function WebSocketProvider({ children }: Props) {
 				console.log("sent:", msg);
 				ws.send(JSON.stringify({
 					...msg,
-					token: localStorage.getItem("token")
+					token: sessionStorage.getItem("token")
 				}));
 			} catch (e) {
 				console.warn("failed to send websocket message", e);

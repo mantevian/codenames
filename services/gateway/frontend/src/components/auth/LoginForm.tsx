@@ -25,8 +25,8 @@ export default function LoginForm() {
 			return;
 		}
 
-		localStorage.setItem("token", token);
-		localStorage.setItem("username", formData.get("name")!.toString());
+		sessionStorage.setItem("token", token);
+		sessionStorage.setItem("username", formData.get("name")!.toString());
 	}
 
 	return <>

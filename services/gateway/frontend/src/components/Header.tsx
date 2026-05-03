@@ -12,7 +12,7 @@ export function Header() {
 				</a>
 				
 				<AuthGuard>
-					<p>Welcome, {localStorage.getItem("username")}</p>
+					<p>Welcome, {sessionStorage.getItem("username")}</p>
 				</AuthGuard>
 			</nav>
 		</header>

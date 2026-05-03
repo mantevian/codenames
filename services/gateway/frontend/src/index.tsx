@@ -23,10 +23,8 @@ export function App() {
 						<Route path="/login" component={LoginForm} />
 						<Route path="/register" component={RegisterForm} />
 						
-						<RouteAuthGuard path="/lobby"><Lobby /></RouteAuthGuard>
-						<RouteAuthGuard path="/game/:code"><GameLobby /></RouteAuthGuard>
-						
-						<RouteAuthGuard path="/secret"><div>secret</div></RouteAuthGuard>
+						<RouteAuthGuard path="/lobby" component={Lobby} />
+						<RouteAuthGuard path="/game/:code" component={GameLobby} />
 						
 						<Route default component={NotFound} />
 					</Router>

@@ -1,11 +1,22 @@
 import { useContext, useEffect, useState } from "preact/hooks";
-import { useLocation } from "preact-iso";
+import { RouteProps, useLocation } from "preact-iso";
 import { WSContext, wsReady } from "../WebSocketProvider";
+import { Component, ComponentType } from "preact";
 
 type AuthStatus = "waiting" | "success" | "fail";
 
-export default function RouteAuthGuard({ path, children }: { path?: string, children?: any }) {
-	const { path: locationPath, route } = useLocation();
+interface RouteAuthGuardProps {
+	component: ComponentType<any>;
+	redirectTo?: string;
+	[key: string]: any;
+}
+
+export default function RouteAuthGUard({
+	component: Component,
+	redirectTo = "/login",
+	...rest
+}: RouteAuthGuardProps) {
+	const { route } = useLocation();
 	const [status, setStatus] = useState<AuthStatus>("waiting");
 	const ws = useContext(WSContext);
 
@@ -19,24 +30,24 @@ export default function RouteAuthGuard({ path, children }: { path?: string, chil
 					setStatus("success");
 				} else {
 					setStatus("fail");
-					route("/");
+					route(redirectTo, true);
 				}
 			}).catch(() => {
 				setStatus("fail");
-				route("/");
+				route(redirectTo, true);
 			});
 		}).catch(() => {
 			setStatus("fail");
-			route("/");
+			route(redirectTo, true);
 		});
-	}, [locationPath]);
+	}, []);
 
 	switch (status) {
 		case "waiting":
 			return <div>Checking authentication...</div>;
 
 		case "success":
-			return children;
+			return <Component {...rest} />;
 
 		default:
 			return null;
