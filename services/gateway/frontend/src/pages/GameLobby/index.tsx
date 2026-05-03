@@ -36,6 +36,15 @@ export default function GameLobby() {
 		});
 	}
 
+	function startGame() {
+		ws.request({
+			action: "start_game",
+			payload: {
+				"player_id": Me.value?.id,
+			}
+		});
+	}
+
 	function quit() {
 		ws.request({
 			action: "quit_game",
@@ -75,6 +84,8 @@ export default function GameLobby() {
 						</li>
 					))}
 				</ul>
+
+				<button onClick={startGame}>start</button>
 			</section>;
 
 		default:

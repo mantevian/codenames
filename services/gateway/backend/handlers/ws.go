@@ -135,6 +135,15 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 					if setReadyRes.Success {
 						UpdatePlayerListByPlayerId(api, hub, req.PlayerId)
 					}
+				case "start_game":
+					var req types.StartGameRequest
+					json.Unmarshal(message.Payload, &req)
+					startGameRes := game.StartGame(api, req)
+					res = startGameRes
+
+					if startGameRes.Success {
+						UpdatePlayerListByPlayerId(api, hub, req.PlayerId)
+					}
 				}
 			}
 
