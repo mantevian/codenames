@@ -33,6 +33,7 @@ create table players (
 	team team,
 	role role,
 	is_ready boolean,
+	created_at timestamptz,
 
 	primary key (id),
 	foreign key (game_id) references games (id),

@@ -5,6 +5,6 @@ import (
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func Ping(api api.Api) types.GenericResponse {
+func Ping(api *api.Api) types.GenericResponse {
 	return types.GenericResponseSuccess("ok")
 }

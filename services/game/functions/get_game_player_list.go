@@ -14,6 +14,27 @@ func GetGamePlayerList(payload []byte, db *sql.DB) types.GetGamePlayerListRespon
 		return types.GetGamePlayerListError("can't parse request")
 	}
 
+	joinCode := req.JoinCode
+
+	if joinCode == "" {
+		rows, err := db.Query(`
+		select
+			games.join_code
+		from games
+		inner join players on players.game_id = games.id
+		where players.id = $1
+		`,
+			req.PlayerId,
+		)
+
+		if err != nil {
+			return types.GetGamePlayerListError("game not found")
+		}
+
+		rows.Next()
+		rows.Scan(&joinCode)
+	}
+
 	rows, err := db.Query(`
 		select
 			players.id,
@@ -27,8 +48,9 @@ func GetGamePlayerList(payload []byte, db *sql.DB) types.GetGamePlayerListRespon
 		inner join games on players.game_id = games.id
 		inner join users on players.user_id = users.id
 		where games.join_code = $1
+		order by players.created_at asc
 		`,
-		req.JoinCode,
+		joinCode,
 	)
 
 	if err != nil {
@@ -44,7 +66,8 @@ func GetGamePlayerList(payload []byte, db *sql.DB) types.GetGamePlayerListRespon
 	}
 
 	return types.GetGamePlayerListResponse{
-		Success: true,
-		Players: players,
+		Success:  true,
+		Players:  players,
+		JoinCode: joinCode,
 	}
 }

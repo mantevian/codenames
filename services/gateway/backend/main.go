@@ -27,7 +27,7 @@ func main() {
 
 	wsHub := ws.NewHub()
 
-	http.HandleFunc("/ws", handlers.Ws(api, wsHub))
+	http.HandleFunc("/ws", handlers.Ws(&api, wsHub))
 
 	http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 

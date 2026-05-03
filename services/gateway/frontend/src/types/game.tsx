@@ -1,4 +1,4 @@
-type Game = {
+export type Game = {
 	id: string;
 	starting_team: string;
 	join_code: string;
@@ -9,4 +9,17 @@ type Game = {
 	created_at: string;
 };
 
-export default Game;
+export type Player = {
+	id: string;
+	game_id: string;
+	user_id: string;
+	team: "red" | "blue";
+	role: "operative" | "spymaster";
+	is_ready: boolean;
+	name: string;
+};
+
+export type User = {
+	id: string;
+	name: string;
+}

@@ -8,7 +8,7 @@ import (
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func Login(api api.Api, req types.LoginRequest) types.LoginResponse {
+func Login(api *api.Api, req types.LoginRequest) types.LoginResponse {
 	responseBytes, err := api.Gateway.Call(rabbitmq.AuthQueue, "login", req)
 
 	if err != nil {

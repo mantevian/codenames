@@ -68,9 +68,9 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 	}
 
 	if redPlayers > bluePlayers {
-		team = enums.TeamRed
-	} else if redPlayers < bluePlayers {
 		team = enums.TeamBlue
+	} else if redPlayers < bluePlayers {
+		team = enums.TeamRed
 	} else {
 		team = enums.RandomTeam()
 	}
@@ -83,7 +83,8 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 				user_id,
 				team,
 				role,
-				is_ready
+				is_ready,
+				created_at
 			)
 		values
 			(
@@ -92,7 +93,8 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 				$2,
 				$3,
 				$4,
-				false
+				false,
+				now()
 			)
 		returning *
 		`,

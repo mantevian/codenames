@@ -2,6 +2,7 @@ import { createContext } from "preact";
 import { useEffect } from "preact/hooks";
 import { signal, Signal } from "@preact/signals";
 import { v4 } from "uuid";
+import { Storage } from "../storage/user";
 
 type WSStatus = "connecting" | "open" | "closed" | "error";
 
@@ -124,7 +125,7 @@ export function WebSocketProvider({ children }: Props) {
 				console.log("sent:", msg);
 				ws.send(JSON.stringify({
 					...msg,
-					token: sessionStorage.getItem("token")
+					token: Storage.token
 				}));
 			} catch (e) {
 				console.warn("failed to send websocket message", e);

@@ -1,5 +1,6 @@
 import { useLocation } from 'preact-iso';
 import AuthGuard from "./auth/AuthGuard";
+import { Storage } from "../storage/user";
 
 export function Header() {
 	const { url } = useLocation();
@@ -12,7 +13,7 @@ export function Header() {
 				</a>
 				
 				<AuthGuard>
-					<p>Welcome, {sessionStorage.getItem("username")}</p>
+					<p>Welcome, {Storage.user.value?.name}</p>
 				</AuthGuard>
 			</nav>
 		</header>

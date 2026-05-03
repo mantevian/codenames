@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "preact/hooks";
-import { useLocation } from "preact-iso";
 import { WSContext, wsReady } from "../WebSocketProvider";
 
 type AuthStatus = "waiting" | "success" | "fail";

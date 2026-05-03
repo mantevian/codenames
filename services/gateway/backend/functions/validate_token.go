@@ -8,7 +8,7 @@ import (
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func ValidateToken(api api.Api, req types.ValidateTokenRequest) types.ValidateTokenResponse {
+func ValidateToken(api *api.Api, req types.ValidateTokenRequest) types.ValidateTokenResponse {
 	responseBytes, err := api.Gateway.Call(rabbitmq.AuthQueue, "validate_token", req)
 
 	if err != nil {

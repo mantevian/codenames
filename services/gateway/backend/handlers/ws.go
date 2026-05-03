@@ -21,7 +21,29 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func Ws(api api.Api, hub *ws.Hub) http.HandlerFunc {
+func UpdatePlayerListByJoinCode(api *api.Api, hub *ws.Hub, joinCode string) {
+	res := game.GetGamePlayersList(
+		api,
+		types.GetGamePlayerListRequest{
+			JoinCode: joinCode,
+		},
+	)
+	json, _ := json.Marshal(res)
+	hub.Broadcast(joinCode, "update_player_list", json)
+}
+
+func UpdatePlayerListByPlayerId(api *api.Api, hub *ws.Hub, playerId string) {
+	res := game.GetGamePlayersList(
+		api,
+		types.GetGamePlayerListRequest{
+			PlayerId: playerId,
+		},
+	)
+	json, _ := json.Marshal(res)
+	hub.Broadcast(res.JoinCode, "update_player_list", json)
+}
+
+func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
@@ -92,14 +114,16 @@ func Ws(api api.Api, hub *ws.Hub) http.HandlerFunc {
 
 					if joinGameRes.Success {
 						hub.MoveClient(id, req.JoinCode)
-						playerListRes := game.GetGamePlayersList(
-							api,
-							types.GetGamePlayerListRequest{
-								JoinCode: req.JoinCode,
-							},
-						)
-						json, _ := json.Marshal(playerListRes)
-						hub.Broadcast(req.JoinCode, "update_player_list", json)
+						UpdatePlayerListByJoinCode(api, hub, req.JoinCode)
+					}
+				case "set_ready":
+					var req types.SetReadyRequest
+					json.Unmarshal(message.Payload, &req)
+					setReadyRes := game.SetReady(api, req)
+					res = setReadyRes
+
+					if setReadyRes.Success {
+						UpdatePlayerListByPlayerId(api, hub, req.PlayerId)
 					}
 				}
 			}

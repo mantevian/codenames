@@ -27,6 +27,8 @@ func HandleRPC(action string, payload []byte) ([]byte, error) {
 		res = functions.JoinGame(payload, db)
 	case "get_game_player_list":
 		res = functions.GetGamePlayerList(payload, db)
+	case "set_ready":
+		res = functions.SetReady(payload, db)
 	default:
 		res = types.GenericResponseError(fmt.Sprintf("unknown rpc action %s", action))
 	}

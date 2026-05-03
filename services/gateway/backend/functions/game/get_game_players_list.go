@@ -8,9 +8,8 @@ import (
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func GetGamePlayersList(api api.Api, req types.GetGamePlayerListRequest) types.GetGamePlayerListResponse {
+func GetGamePlayersList(api *api.Api, req types.GetGamePlayerListRequest) types.GetGamePlayerListResponse {
 	responseBytes, err := api.Gateway.Call(rabbitmq.GameQueue, "get_game_player_list", req)
-
 	if err != nil {
 		return types.GetGamePlayerListError("")
 	}

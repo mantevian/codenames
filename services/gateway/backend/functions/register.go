@@ -8,7 +8,7 @@ import (
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func Register(api api.Api, req types.RegisterRequest) types.RegisterResponse {
+func Register(api *api.Api, req types.RegisterRequest) types.RegisterResponse {
 	if req.Password != req.PasswordConfirm {
 		return types.RegisterError("Passwords don't match")
 	}

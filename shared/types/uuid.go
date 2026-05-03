@@ -1,3 +1,3 @@
 package types
 
-type Uuid string
+type Uuid = string

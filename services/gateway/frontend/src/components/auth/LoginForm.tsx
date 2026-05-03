@@ -1,6 +1,7 @@
 import { TargetedEvent } from "preact";
 import { useContext, useRef } from "preact/hooks";
 import { WSContext } from "../WebSocketProvider";
+import { Storage } from "../../storage/user";
 
 export default function LoginForm() {
 	const ws = useContext(WSContext);
@@ -17,7 +18,7 @@ export default function LoginForm() {
 			payload: entries
 		});
 
-		const { token, message } = res.payload;
+		const { user_id, token, message } = res.payload;
 
 		messageRef!.current!.innerHTML = message;
 
@@ -25,8 +26,11 @@ export default function LoginForm() {
 			return;
 		}
 
-		sessionStorage.setItem("token", token);
-		sessionStorage.setItem("username", formData.get("name")!.toString());
+		Storage.token.value = token;
+		Storage.user.value = {
+			id: user_id,
+			name: formData.get("name")!.toString()
+		};
 	}
 
 	return <>

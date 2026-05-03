@@ -1,22 +1,14 @@
 import { useRoute } from "preact-iso";
 import { useContext, useEffect, useState } from "preact/hooks";
 import { Message, WSContext } from "../../components/WebSocketProvider";
+import { Me, Storage } from "../../storage/user";
 
 type JoinStatus = "waiting" | "success" | "fail";
-
-type Player = {
-	id: string;
-	name: string;
-	team: "red" | "blue";
-	role: "operative" | "spymaster";
-	is_ready: boolean;
-};
 
 export default function GameLobby() {
 	const { params } = useRoute();
 	const ws = useContext(WSContext);
 	const [joined, setJoined] = useState<JoinStatus>("waiting");
-	const [players, setPlayers] = useState<Player[]>([]);
 
 	useEffect(() => {
 		ws.request({
@@ -29,9 +21,19 @@ export default function GameLobby() {
 		});
 
 		ws.on("update_player_list", (msg: Message) => {
-			setPlayers(msg.payload.players);
+			Storage.players.value = msg.payload.players;
 		});
 	}, []);
+
+	function setReady(value: boolean) {
+		ws.request({
+			action: "set_ready",
+			payload: {
+				"player_id": Me.value?.id,
+				"is_ready": value,
+			}
+		});
+	}
 
 	switch (joined) {
 		case "waiting":
@@ -44,11 +46,18 @@ export default function GameLobby() {
 				<h1>game lobby</h1>
 				<p>join code: {params.code}</p>
 
+				<label>
+					{"I am "}
+					<button onClick={() => setReady(!Me.value?.is_ready)}>
+						{Me.value?.is_ready ? "ready" : "not ready"}
+					</button>
+				</label>
+
 				<p>players:</p>
 				<ul>
-					{players.map(p => (
+					{Storage.players.value.map(p => (
 						<li key={p.id}>
-							<p>{p.name} ({p.team}, {p.role}) {p.is_ready ? "ready" : "not ready"}</p>
+							<p>{p.name} ({p.team}) {p.is_ready ? "ready" : "not ready"}</p>
 						</li>
 					))}
 				</ul>

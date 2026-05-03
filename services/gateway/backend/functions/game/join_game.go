@@ -8,7 +8,7 @@ import (
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func JoinGame(api api.Api, req types.JoinGameRequest) types.JoinGameResponse {
+func JoinGame(api *api.Api, req types.JoinGameRequest) types.JoinGameResponse {
 	responseBytes, err := api.Gateway.Call(rabbitmq.GameQueue, "join_game", req)
 
 	if err != nil {
