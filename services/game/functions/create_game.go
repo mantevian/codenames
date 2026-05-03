@@ -2,19 +2,12 @@ package functions
 
 import (
 	"database/sql"
-	"encoding/json"
 
 	"mantevian.xyz/codenames/shared/enums"
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func CreateGame(payload []byte, db *sql.DB) types.CreateGameResponse {
-	var req types.CreateGameRequest
-	err := json.Unmarshal(payload, &req)
-	if err != nil {
-		return types.CreateGameError("can't parse request")
-	}
-
+func CreateGame(req types.CreateGameRequest, db *sql.DB) types.CreateGameResponse {
 	rows, err := db.Query(`
 		insert into games
 			(

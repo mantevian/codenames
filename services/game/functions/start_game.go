@@ -2,7 +2,6 @@ package functions
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -11,13 +10,7 @@ import (
 	"mantevian.xyz/codenames/shared/util"
 )
 
-func StartGame(payload []byte, db *sql.DB) types.StartGameResponse {
-	var req types.StartGameRequest
-	err := json.Unmarshal(payload, &req)
-	if err != nil {
-		return types.StartGameError("can't parse request")
-	}
-
+func StartGame(req types.StartGameRequest, db *sql.DB) types.StartGameResponse {
 	var game types.BasicGameResponse
 	var playersReady []bool
 

@@ -2,20 +2,14 @@ package functions
 
 import (
 	"database/sql"
-	"encoding/json"
 
 	"mantevian.xyz/codenames/shared/enums"
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
-	var req types.JoinGameRequest
-	err := json.Unmarshal(payload, &req)
-	if err != nil {
-		return types.JoinGameError("can't parse request")
-	}
-
+func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 	var gameId types.Uuid
+	var gameStatus enums.GameStatus
 	var userId types.Uuid = req.UserId
 	var team enums.Team
 
@@ -24,14 +18,15 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 
 	rows, err := db.Query(`
 			select
-				id
+				id,
+				status
 			from games
 			where join_code = $1
 		`,
 		req.JoinCode,
 	)
 	rows.Next()
-	rows.Scan(&gameId)
+	rows.Scan(&gameId, &gameStatus)
 
 	rows, err = db.Query(`
 			select
@@ -54,8 +49,16 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 		rows.Scan(&playerUserId, &playerTeam)
 
 		if playerUserId == req.UserId {
+			if gameStatus != enums.GameStatusWaiting {
+				return types.JoinGameResponse{
+					Success: true,
+					Message: "game already started",
+				}
+			}
+
 			return types.JoinGameResponse{
 				Success: true,
+				Message: "already joined",
 			}
 		}
 

@@ -2,19 +2,12 @@ package functions
 
 import (
 	"database/sql"
-	"encoding/json"
 
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func SetReady(payload []byte, db *sql.DB) types.SetReadyResponse {
-	var req types.SetReadyRequest
-	err := json.Unmarshal(payload, &req)
-	if err != nil {
-		return types.SetReadyError("can't parse request")
-	}
-
-	_, err = db.Exec(`
+func SetReady(req types.SetReadyRequest, db *sql.DB) types.SetReadyResponse {
+	_, err := db.Exec(`
 		update players
 		set is_ready = $2
 		where id = $1

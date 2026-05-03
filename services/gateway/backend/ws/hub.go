@@ -11,8 +11,8 @@ import (
 
 type Hub struct {
 	mu          sync.RWMutex
-	clients     map[string]map[string]*Client // group -> client id -> client
-	clientGroup map[string]string             // client id -> group
+	clients     map[string]map[types.Uuid]*Client // group -> client id -> client
+	clientGroup map[types.Uuid]string             // client id -> group
 }
 
 func NewHub() *Hub {
@@ -20,6 +20,18 @@ func NewHub() *Hub {
 		clients:     make(map[string]map[string]*Client),
 		clientGroup: make(map[string]string),
 	}
+}
+
+func (h *Hub) GetClientsInGroup(group string) []*Client {
+	h.mu.RLock()
+	m := h.clients[group]
+	h.mu.RUnlock()
+
+	var clients []*Client
+	for _, c := range m {
+		clients = append(clients, c)
+	}
+	return clients
 }
 
 func (h *Hub) Broadcast(group string, action string, payload []byte) {
@@ -89,4 +101,12 @@ func (h *Hub) MoveClient(id string, group string) {
 		dst[id] = client
 		h.clientGroup[id] = group
 	}
+}
+
+func (h *Hub) SetClientUserId(clientId types.Uuid, userId types.Uuid) {
+	h.mu.Lock()
+	g := h.clientGroup[clientId]
+	c := h.clients[g][clientId]
+	c.UserId = userId
+	h.mu.Unlock()
 }

@@ -2,18 +2,11 @@ package functions
 
 import (
 	"database/sql"
-	"encoding/json"
 
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func GetGamePlayerList(payload []byte, db *sql.DB) types.GetGamePlayerListResponse {
-	var req types.GetGamePlayerListRequest
-	err := json.Unmarshal(payload, &req)
-	if err != nil {
-		return types.GetGamePlayerListError("can't parse request")
-	}
-
+func GetGamePlayerList(req types.GetGamePlayerListRequest, db *sql.DB) types.GetGamePlayerListResponse {
 	joinCode := req.JoinCode
 
 	if joinCode == "" {

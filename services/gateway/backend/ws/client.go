@@ -2,9 +2,11 @@ package ws
 
 import (
 	"github.com/gorilla/websocket"
+	"mantevian.xyz/codenames/shared/types"
 )
 
 type Client struct {
-	Id   string
-	Conn *websocket.Conn
+	Id     types.Uuid
+	Conn   *websocket.Conn
+	UserId types.Uuid
 }

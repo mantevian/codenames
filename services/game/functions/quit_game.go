@@ -2,18 +2,11 @@ package functions
 
 import (
 	"database/sql"
-	"encoding/json"
 
 	"mantevian.xyz/codenames/shared/types"
 )
 
-func QuitGame(payload []byte, db *sql.DB) types.QuitGameResponse {
-	var req types.QuitGameRequest
-	err := json.Unmarshal(payload, &req)
-	if err != nil {
-		return types.QuitGameError("can't parse request")
-	}
-
+func QuitGame(req types.QuitGameRequest, db *sql.DB) types.QuitGameResponse {
 	var gameId string
 	var joinCode string
 

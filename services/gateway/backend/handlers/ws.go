@@ -43,6 +43,36 @@ func UpdatePlayerListByPlayerId(api *api.Api, hub *ws.Hub, playerId string) {
 	hub.Broadcast(res.JoinCode, "update_player_list", json)
 }
 
+func UpdateGameStateByJoinCode(api *api.Api, hub *ws.Hub, joinCode string) {
+	clients := hub.GetClientsInGroup(joinCode)
+	var userIds []types.Uuid
+
+	for _, c := range clients {
+		userIds = append(userIds, c.UserId)
+	}
+
+	res := game.GetGameState(
+		api,
+		types.GetGameStateRequest{
+			JoinCode: joinCode,
+			UserIds:  userIds,
+		},
+	)
+
+	for _, c := range clients {
+		resJson, _ := json.Marshal(res[c.UserId])
+		message := types.WsMessage{
+			Action:  "update_game_state",
+			Payload: resJson,
+		}
+
+		messageJson, _ := json.Marshal(message)
+		c.Conn.WriteMessage(websocket.TextMessage, messageJson)
+
+		fmt.Printf("send >> %s >> %s\n", c.Id, string(resJson))
+	}
+}
+
 func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
@@ -53,10 +83,12 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 
 		id := uuid.New().String()
 
-		hub.AddClient("", &ws.Client{
+		client := ws.Client{
 			Id:   id,
 			Conn: conn,
-		})
+		}
+
+		hub.AddClient("", &client)
 
 		defer conn.Close()
 		defer hub.RemoveClient(id)
@@ -74,6 +106,8 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 			validateTokenRes := functions.ValidateToken(api, types.ValidateTokenRequest{Token: message.Token})
 			authSuccess := validateTokenRes.Success
 
+			hub.SetClientUserId(client.Id, validateTokenRes.Claims.UserId)
+
 			var res any
 
 			switch message.Action {
@@ -86,7 +120,9 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 			case "login":
 				var req types.LoginRequest
 				json.Unmarshal(message.Payload, &req)
-				res = functions.Login(api, req)
+				loginRes := functions.Login(api, req)
+				res = loginRes
+				hub.SetClientUserId(client.Id, loginRes.UserId)
 			case "validate_token":
 				res = validateTokenRes
 			default:
@@ -115,6 +151,7 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 					if joinGameRes.Success {
 						hub.MoveClient(id, req.JoinCode)
 						UpdatePlayerListByJoinCode(api, hub, req.JoinCode)
+						UpdateGameStateByJoinCode(api, hub, req.JoinCode)
 					}
 				case "quit_game":
 					var req types.QuitGameRequest
@@ -144,6 +181,7 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 					if startGameRes.Success {
 						UpdatePlayerListByPlayerId(api, hub, req.PlayerId)
 						hub.Broadcast(startGameRes.Game.JoinCode, "game_started", []byte("{}"))
+						UpdateGameStateByJoinCode(api, hub, startGameRes.Game.JoinCode)
 					}
 				}
 			}

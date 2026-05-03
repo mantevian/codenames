@@ -20,19 +20,37 @@ func HandleRPC(action string, payload []byte) ([]byte, error) {
 
 	switch action {
 	case "create_game":
-		res = functions.CreateGame(payload, db)
+		var req types.CreateGameRequest
+		json.Unmarshal(payload, &req)
+		res = functions.CreateGame(req, db)
 	case "get_game_list":
+		var req types.GetGameListRequest
+		json.Unmarshal(payload, &req)
 		res = functions.GetGameList(db)
 	case "join_game":
-		res = functions.JoinGame(payload, db)
+		var req types.JoinGameRequest
+		json.Unmarshal(payload, &req)
+		res = functions.JoinGame(req, db)
 	case "quit_game":
-		res = functions.QuitGame(payload, db)
+		var req types.QuitGameRequest
+		json.Unmarshal(payload, &req)
+		res = functions.QuitGame(req, db)
 	case "get_game_player_list":
-		res = functions.GetGamePlayerList(payload, db)
+		var req types.GetGamePlayerListRequest
+		json.Unmarshal(payload, &req)
+		res = functions.GetGamePlayerList(req, db)
 	case "set_ready":
-		res = functions.SetReady(payload, db)
+		var req types.SetReadyRequest
+		json.Unmarshal(payload, &req)
+		res = functions.SetReady(req, db)
 	case "start_game":
-		res = functions.StartGame(payload, db)
+		var req types.StartGameRequest
+		json.Unmarshal(payload, &req)
+		res = functions.StartGame(req, db)
+	case "get_game_state":
+		var req types.GetGameStateRequest
+		json.Unmarshal(payload, &req)
+		res = functions.GetGameState(req, db)
 	default:
 		res = types.GenericResponseError(fmt.Sprintf("unknown rpc action %s", action))
 	}

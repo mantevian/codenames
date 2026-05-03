@@ -26,13 +26,14 @@ type User struct {
 }
 
 type Player struct {
-	Id      Uuid       `json:"id"`
-	UserId  Uuid       `json:"user_id"`
-	GameId  Uuid       `json:"game_id"`
-	Team    enums.Team `json:"team"`
-	Role    enums.Role `json:"role"`
-	IsReady bool       `json:"is_ready"`
-	Name    string     `json:"name"`
+	Id        Uuid       `json:"id"`
+	UserId    Uuid       `json:"user_id"`
+	GameId    Uuid       `json:"game_id"`
+	Team      enums.Team `json:"team"`
+	Role      enums.Role `json:"role"`
+	IsReady   bool       `json:"is_ready"`
+	CreatedAt time.Time  `json:"created_at"`
+	Name      string     `json:"name"`
 }
 
 type Tile struct {
