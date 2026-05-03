@@ -20,11 +20,13 @@ func StartGame(payload []byte, db *sql.DB) types.StartGameResponse {
 
 	var gameId string
 	var startingTeam enums.Team
+	var language enums.Language
 
 	rows, err := db.Query(`
 		select
 			games.id,
-			games.starting_team
+			games.starting_team,
+			games.language
 		from games
 		inner join players on players.game_id = games.id
 		where
@@ -38,7 +40,7 @@ func StartGame(payload []byte, db *sql.DB) types.StartGameResponse {
 	}
 
 	rows.Next()
-	rows.Scan(&gameId, &startingTeam)
+	rows.Scan(&gameId, &startingTeam, &language)
 
 	redTiles := 8
 	blueTiles := 8
@@ -50,12 +52,35 @@ func StartGame(payload []byte, db *sql.DB) types.StartGameResponse {
 		blueTiles = 9
 	}
 
-	var newRows []string
-
 	var shuffledTiles = util.MakeShuffledTileList(redTiles, blueTiles, 7, 1)
 
+	rows, err = db.Query(`
+		select
+			word
+		from words
+		where language = $1
+		order by random()
+		limit 25
+		`,
+		language,
+	)
+
+	if err != nil {
+		return types.StartGameError("can't get words")
+	}
+
+	var words []string
+
+	for rows.Next() {
+		var word string
+		rows.Scan(&word)
+		words = append(words, word)
+	}
+
+	var newRows []string
+
 	for i := range 25 {
-		word := ""
+		word := words[i]
 		tile := shuffledTiles[i]
 
 		newRows = append(newRows,

@@ -154,7 +154,7 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 			}
 
 			responseJson, _ := json.Marshal(response)
-			fmt.Println("response:", string(responseJson))
+			fmt.Println("response >>", string(responseJson))
 
 			if err := conn.WriteMessage(websocket.TextMessage, responseJson); err != nil {
 				break

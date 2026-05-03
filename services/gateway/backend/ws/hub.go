@@ -32,9 +32,9 @@ func (h *Hub) Broadcast(group string, action string, payload []byte) {
 		Payload: payload,
 	}
 	msgBytes, _ := json.Marshal(msg)
+	fmt.Println("broadcast >>", group, "/", action, ">>", string(msgBytes))
 	for _, c := range m {
 		_ = c.Conn.WriteMessage(websocket.TextMessage, msgBytes)
-		fmt.Println("broadcast >>", group, "/", action, ">>", string(msgBytes))
 	}
 }
 
