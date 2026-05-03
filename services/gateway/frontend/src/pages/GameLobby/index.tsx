@@ -1,4 +1,4 @@
-import { useRoute } from "preact-iso";
+import { useLocation, useRoute } from "preact-iso";
 import { useContext, useEffect, useState } from "preact/hooks";
 import { Message, WSContext } from "../../components/WebSocketProvider";
 import { Me, Storage } from "../../storage/user";
@@ -7,6 +7,7 @@ type JoinStatus = "waiting" | "success" | "fail";
 
 export default function GameLobby() {
 	const { params } = useRoute();
+	const { route } = useLocation();
 	const ws = useContext(WSContext);
 	const [joined, setJoined] = useState<JoinStatus>("waiting");
 
@@ -35,16 +36,29 @@ export default function GameLobby() {
 		});
 	}
 
+	function quit() {
+		ws.request({
+			action: "quit_game",
+			payload: {
+				"player_id": Me.value?.id
+			}
+		}).then(() => {
+			route("/lobby");
+		});
+	}
+
 	switch (joined) {
 		case "waiting":
-			return <>
+			return <section class="game-lobby">
 				<h1>joining...</h1>
-			</>;
+			</section>;
 
 		case "success":
-			return <>
+			return <section class="game-lobby">
 				<h1>game lobby</h1>
 				<p>join code: {params.code}</p>
+
+				<button onClick={quit}>quit</button>
 
 				<label>
 					{"I am "}
@@ -61,11 +75,11 @@ export default function GameLobby() {
 						</li>
 					))}
 				</ul>
-			</>;
+			</section>;
 
 		default:
-			return <>
+			return <section class="lobby">
 				<h1>can't join this game</h1>
-			</>;
+			</section>;
 	}
 }

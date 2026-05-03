@@ -90,7 +90,7 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 			case "validate_token":
 				res = validateTokenRes
 			default:
-				res = types.GenericResponseError("not logged in")
+				res = types.GenericResponseError("unknown action")
 			}
 
 			if authSuccess {
@@ -115,6 +115,16 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 					if joinGameRes.Success {
 						hub.MoveClient(id, req.JoinCode)
 						UpdatePlayerListByJoinCode(api, hub, req.JoinCode)
+					}
+				case "quit_game":
+					var req types.QuitGameRequest
+					json.Unmarshal(message.Payload, &req)
+					quitGameRes := game.QuitGame(api, req)
+					res = quitGameRes
+
+					if quitGameRes.Success {
+						hub.MoveClient(id, "")
+						UpdatePlayerListByJoinCode(api, hub, quitGameRes.JoinCode)
 					}
 				case "set_ready":
 					var req types.SetReadyRequest

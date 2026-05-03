@@ -25,6 +25,8 @@ func HandleRPC(action string, payload []byte) ([]byte, error) {
 		res = functions.GetGameList(db)
 	case "join_game":
 		res = functions.JoinGame(payload, db)
+	case "quit_game":
+		res = functions.QuitGame(payload, db)
 	case "get_game_player_list":
 		res = functions.GetGamePlayerList(payload, db)
 	case "set_ready":

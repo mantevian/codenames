@@ -1,7 +1,7 @@
 import { signal, useSignal } from "@preact/signals";
 import { useContext, useEffect } from "preact/hooks";
-import Game from "../types/game";
 import { WSContext, wsReady } from "./WebSocketProvider";
+import { Game } from "../types/game";
 
 export default function GameList() {
 	const games = useSignal<Game[]>([]);

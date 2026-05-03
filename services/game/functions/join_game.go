@@ -44,7 +44,7 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 	)
 
 	if err != nil {
-		return types.JoinGameError("Can't find game")
+		return types.JoinGameError("can't find game")
 	}
 
 	for rows.Next() {
@@ -105,7 +105,7 @@ func JoinGame(payload []byte, db *sql.DB) types.JoinGameResponse {
 	)
 
 	if err != nil {
-		return types.JoinGameError("Cannot create player")
+		return types.JoinGameError("cannot create player")
 	}
 
 	return types.JoinGameResponse{
