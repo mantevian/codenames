@@ -39,6 +39,7 @@ export default function Room() {
 		ws.on("update_game_state", (msg: Message) => {
 			Storage.game.value = msg.payload.game;
 			Storage.tiles.value = msg.payload.tiles;
+			Storage.turn.value = msg.payload.turn;
 		});
 	}, []);
 

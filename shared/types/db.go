@@ -47,12 +47,13 @@ type Tile struct {
 }
 
 type Turn struct {
-	Id         Uuid      `json:"id"`
-	PlayerId   Uuid      `json:"player_id"`
-	GameId     Uuid      `json:"game_id"`
-	ClueWord   string    `json:"clue_word"`
-	ClueNumber int       `json:"clue_number"`
-	CreatedAt  time.Time `json:"created_at"`
+	Id          Uuid      `json:"id"`
+	PlayerId    Uuid      `json:"player_id"`
+	GameId      Uuid      `json:"game_id"`
+	ClueWord    string    `json:"clue_word"`
+	ClueNumber  int       `json:"clue_number"`
+	GuessesLeft int       `json:"guesses_left"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type Guess struct {

@@ -29,10 +29,8 @@ export default function App() {
 						Storage.logout();
 					}
 				}).catch(() => {
-					Storage.logout();
 				});
 			}).catch(() => {
-				Storage.logout();
 			});
 		}
 

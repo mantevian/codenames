@@ -1,6 +1,6 @@
 package enums
 
-type Tile string
+type Tile = string
 
 const (
 	TileRed      Tile = "red"

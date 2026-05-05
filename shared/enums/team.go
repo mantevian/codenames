@@ -2,7 +2,7 @@ package enums
 
 import "math/rand/v2"
 
-type Team string
+type Team = string
 
 const (
 	TeamRed  Team = "red"

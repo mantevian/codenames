@@ -19,7 +19,6 @@ export default function GameLobby() {
 		ws.request({
 			action: "set_ready",
 			payload: {
-				"player_id": Me.value?.id,
 				"is_ready": value,
 			}
 		});
@@ -28,9 +27,6 @@ export default function GameLobby() {
 	function startGame() {
 		ws.request({
 			action: "start_game",
-			payload: {
-				"player_id": Me.value?.id,
-			}
 		}).then(res => {
 			setStartResponse(res.payload.message);
 		});
@@ -39,9 +35,6 @@ export default function GameLobby() {
 	function quit() {
 		ws.request({
 			action: "quit_game",
-			payload: {
-				"player_id": Me.value?.id
-			}
 		}).then(() => {
 			route("/lobby");
 		});

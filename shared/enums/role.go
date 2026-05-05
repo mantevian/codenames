@@ -1,6 +1,6 @@
 package enums
 
-type Role string
+type Role = string
 
 const (
 	RoleSpymaster Role = "spymaster"

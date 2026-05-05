@@ -54,6 +54,14 @@ li.tile {
 	transition: scale 0.3s ease, opacity 0.3s ease;
 }
 
+li.tile[data-enabled] {
+	cursor: pointer;
+}
+
+li.tile:not([data-enabled]) {
+	cursor: default;
+}
+
 li.tile:not([data-type]) {
 	--tile-color: var(--gray);
 	--tile-color-opacity: var(--gray-opacity);
@@ -87,8 +95,12 @@ li.tile[data-type='assassin'] {
 
 li.tile:hover {
 	background-image: linear-gradient(var(--tile-color), var(--tile-color));
-	scale: 1.3;
+	scale: 1.1;
 	z-index: 1;
+}
+
+li.tile[data-enabled]:hover {
+	scale: 1.4;
 }
 
 ul.board:has(li:hover) > li:not(:hover) {

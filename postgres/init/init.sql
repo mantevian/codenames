@@ -59,6 +59,7 @@ create table turns (
 	game_id uuid,
 	clue_word varchar(64),
 	clue_number int,
+	guesses_left int,
 	created_at timestamptz,
 
 	primary key (id),

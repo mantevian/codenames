@@ -13,6 +13,7 @@ func GetGameState(req types.GetGameStateRequest, db *sql.DB) types.GetGameStateR
 	var game types.Game
 	var tiles []types.Tile
 	var tilesHidden []types.Tile
+	var turn types.Turn
 	players := make(map[types.Uuid]types.Player) // user id!!!
 
 	var rows *sql.Rows
@@ -97,6 +98,7 @@ func GetGameState(req types.GetGameStateRequest, db *sql.DB) types.GetGameStateR
 			word
 		from tiles
 		where game_id = $1
+		order by position asc
 		`,
 		game.Id,
 	)
@@ -131,6 +133,36 @@ func GetGameState(req types.GetGameStateRequest, db *sql.DB) types.GetGameStateR
 	}
 	rows.Close()
 
+	rows, err = db.Query(`
+		select
+			player_id,
+			clue_word,
+			clue_number,
+			guesses_left,
+			created_at
+		from turns
+		where game_id = $1
+		order by created_at desc
+		limit 1
+		`,
+		game.Id,
+	)
+
+	if err != nil {
+		return types.GetGameStateErrorMap(req.UserIds, "turn not found")
+	}
+
+	if rows.Next() {
+		rows.Scan(
+			&turn.PlayerId,
+			&turn.ClueWord,
+			&turn.ClueNumber,
+			&turn.GuessesLeft,
+			&turn.CreatedAt,
+		)
+	}
+	rows.Close()
+
 	fullResults := make(types.GetGameStateResponseMap)
 
 	for _, id := range req.UserIds {
@@ -142,12 +174,14 @@ func GetGameState(req types.GetGameStateRequest, db *sql.DB) types.GetGameStateR
 				Success: true,
 				Game:    game,
 				Tiles:   tilesHidden,
+				Turn:    turn,
 			}
 		case enums.RoleSpymaster:
 			res = types.GetGameStateResponse{
 				Success: true,
 				Game:    game,
 				Tiles:   tiles,
+				Turn:    turn,
 			}
 		}
 		fullResults[id] = res

@@ -10,6 +10,7 @@ type GetGameStateResponse struct {
 	Message string `json:"message"`
 	Game    Game   `json:"game"`
 	Tiles   []Tile `json:"tiles"`
+	Turn    Turn   `json:"turn"`
 }
 
 type GetGameStateResponseMap = map[Uuid]GetGameStateResponse

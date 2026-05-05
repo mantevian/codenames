@@ -2,7 +2,7 @@ import { createContext } from "preact";
 import { useEffect } from "preact/hooks";
 import { signal, Signal } from "@preact/signals";
 import { v4 } from "uuid";
-import { Storage } from "../storage/user";
+import { Me, Storage } from "../storage/user";
 
 type WSStatus = "connecting" | "open" | "closed" | "error";
 
@@ -122,11 +122,19 @@ export function WebSocketProvider({ children }: Props) {
 	const send = (msg: Message) => {
 		if (ws && ws.readyState === WebSocket.OPEN) {
 			try {
-				console.log("sent:", msg);
-				ws.send(JSON.stringify({
+				if (!msg.payload) {
+					msg.payload = {};
+				}
+				
+				msg.payload["player_id"] = Me.value?.id;
+
+				const finalMessage = {
 					...msg,
-					token: Storage.token
-				}));
+					token: Storage.token,
+				};
+
+				console.log("sent:", finalMessage);
+				ws.send(JSON.stringify(finalMessage));
 			} catch (e) {
 				console.warn("failed to send websocket message", e);
 			}

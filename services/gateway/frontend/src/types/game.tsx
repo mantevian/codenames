@@ -27,7 +27,7 @@ export type Player = {
 export type User = {
 	id: string;
 	name: string;
-}
+};
 
 export type Tile = {
 	position: number;
@@ -35,4 +35,12 @@ export type Tile = {
 	type: string;
 	is_revealed: boolean;
 	word: string;
+};
+
+export type Turn = {
+	player_id: string;
+	clue_word: string;
+	clue_number: number;
+	guesses_left: number;
+	created_at: string;
 }

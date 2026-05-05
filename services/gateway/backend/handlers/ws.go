@@ -125,8 +125,6 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 				hub.SetClientUserId(client.Id, loginRes.UserId)
 			case "validate_token":
 				res = validateTokenRes
-			default:
-				res = types.GenericResponseError("unknown action")
 			}
 
 			if authSuccess {
@@ -182,6 +180,33 @@ func Ws(api *api.Api, hub *ws.Hub) http.HandlerFunc {
 						UpdatePlayerListByPlayerId(api, hub, req.PlayerId)
 						hub.Broadcast(startGameRes.Game.JoinCode, "game_started", []byte("{}"))
 						UpdateGameStateByJoinCode(api, hub, startGameRes.Game.JoinCode)
+					}
+				case "submit_clue":
+					var req types.SubmitClueRequest
+					json.Unmarshal(message.Payload, &req)
+					submitClueRes := game.SubmitClue(api, req)
+					res = submitClueRes
+
+					if submitClueRes.Success {
+						UpdateGameStateByJoinCode(api, hub, submitClueRes.JoinCode)
+					}
+				case "submit_guess":
+					var req types.SubmitGuessRequest
+					json.Unmarshal(message.Payload, &req)
+					submitGuessRes := game.SubmitGuess(api, req)
+					res = submitGuessRes
+
+					if submitGuessRes.Success {
+						UpdateGameStateByJoinCode(api, hub, submitGuessRes.JoinCode)
+					}
+				case "end_turn":
+					var req types.EndTurnRequest
+					json.Unmarshal(message.Payload, &req)
+					endTurnRes := game.EndTurn(api, req)
+					res = endTurnRes
+
+					if endTurnRes.Success {
+						UpdateGameStateByJoinCode(api, hub, endTurnRes.JoinCode)
 					}
 				}
 			}

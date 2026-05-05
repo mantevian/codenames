@@ -51,6 +51,18 @@ func HandleRPC(action string, payload []byte) ([]byte, error) {
 		var req types.GetGameStateRequest
 		json.Unmarshal(payload, &req)
 		res = functions.GetGameState(req, db)
+	case "submit_clue":
+		var req types.SubmitClueRequest
+		json.Unmarshal(payload, &req)
+		res = functions.SubmitClue(req, db)
+	case "submit_guess":
+		var req types.SubmitGuessRequest
+		json.Unmarshal(payload, &req)
+		res = functions.SubmitGuess(req, db)
+	case "end_turn":
+		var req types.EndTurnRequest
+		json.Unmarshal(payload, &req)
+		res = functions.EndTurn(req, db)
 	default:
 		res = types.GenericResponseError(fmt.Sprintf("unknown rpc action %s", action))
 	}
