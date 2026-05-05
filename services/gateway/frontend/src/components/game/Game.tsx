@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "preact/hooks";
+import { useContext, useEffect, useState } from "preact/hooks";
 import { IsMyTurn, Me, Storage } from "../../storage/user";
 import { Message, WSContext } from "../WebSocketProvider";
 import "./style.css";
@@ -8,7 +8,7 @@ import { Tile } from "../../types/game";
 
 export default function Game() {
 	const ws = useContext(WSContext);
-	const submitResponse = signal("");
+	const [submitResponse, setSubmitResponse] = useState("");
 
 	useEffect(() => {
 
@@ -30,7 +30,7 @@ export default function Game() {
 		const { success, message } = res.payload;
 
 		if (message) {
-			submitResponse.value = message;
+			setSubmitResponse(message);
 		}
 	}
 
@@ -39,7 +39,8 @@ export default function Game() {
 		const canSubmitGuess = IsMyTurn.value && Me.value?.role == "operative" && guessesLeft > 0;
 
 		if (canSubmitGuess) {
-			submitResponse.value = "not your turn";
+			setSubmitResponse("not your turn");
+			return;
 		}
 
 		const res = await ws.request({
@@ -52,7 +53,7 @@ export default function Game() {
 		const { success, message } = res.payload;
 
 		if (message) {
-			submitResponse.value = message;
+			setSubmitResponse(message);
 		}
 	}
 
@@ -116,7 +117,7 @@ export default function Game() {
 						</>
 					}
 
-					<p class="error">{submitResponse}</p>
+					<p>{submitResponse}</p>
 
 				</>
 				: ""}

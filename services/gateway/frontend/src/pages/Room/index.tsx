@@ -5,12 +5,13 @@ import { Message, WSContext, wsReady } from "../../components/WebSocketProvider"
 import Game from "../../components/game/Game";
 import GameLobby from "../../components/game/GameLobby";
 
-type JoinStatus = "waiting" | "success" | "fail" | "already_started";
+type JoinStatus = "waiting" | "success" | "already_started";
 
 export default function Room() {
 	const { params } = useRoute();
 	const ws = useContext(WSContext);
 	const [joinStatus, setJoinStatus] = useState<JoinStatus>("waiting");
+	const { route } = useLocation();
 
 	useEffect(() => {
 		wsReady.then(() => {
@@ -23,7 +24,11 @@ export default function Room() {
 				if (res.payload.message == "game already started") {
 					setJoinStatus("already_started");
 				} else {
-					setJoinStatus(res.payload.success ? "success" : "fail");
+					if (res.payload.success) {
+						setJoinStatus("success");
+					} else {
+						route("/lobby");
+					}
 				}
 			});
 		});

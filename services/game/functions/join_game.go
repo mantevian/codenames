@@ -21,7 +21,10 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 				id,
 				status
 			from games
-			where join_code = $1
+			where
+				join_code = $1
+			and
+				status <> 'finished'
 			order by created_at desc
 			limit 1
 		`,
@@ -35,6 +38,10 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 	rows.Next()
 	rows.Scan(&gameId, &gameStatus)
 	rows.Close()
+
+	if gameId == "" {
+		return types.JoinGameError("can't find game")
+	}
 
 	rows, err = db.Query(`
 			select
@@ -50,6 +57,8 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 		return types.JoinGameError("can't find game")
 	}
 
+	isPlayerInThisGame := false
+
 	for rows.Next() {
 		var playerUserId types.Uuid
 		var playerTeam enums.Team
@@ -57,24 +66,7 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 		rows.Scan(&playerUserId, &playerTeam)
 
 		if playerUserId == req.UserId {
-			if gameStatus == enums.GameStatusFinished {
-				return types.JoinGameResponse{
-					Success: false,
-					Message: "game finished",
-				}
-			}
-
-			if gameStatus != enums.GameStatusWaiting {
-				return types.JoinGameResponse{
-					Success: true,
-					Message: "game already started",
-				}
-			}
-
-			return types.JoinGameResponse{
-				Success: true,
-				Message: "already joined",
-			}
+			isPlayerInThisGame = true
 		}
 
 		switch playerTeam {
@@ -82,6 +74,12 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 			redPlayers++
 		case enums.TeamBlue:
 			bluePlayers++
+		}
+	}
+
+	if !isPlayerInThisGame {
+		if gameStatus == enums.GameStatusPlaying {
+			return types.JoinGameError("this room is already playing")
 		}
 	}
 
