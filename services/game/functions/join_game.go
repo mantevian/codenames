@@ -22,6 +22,8 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 				status
 			from games
 			where join_code = $1
+			order by created_at desc
+			limit 1
 		`,
 		req.JoinCode,
 	)
