@@ -267,8 +267,6 @@ func SubmitGuess(req types.SubmitGuessRequest, db *sql.DB) types.SubmitGuessResp
 		teamWon = enums.TeamBlue
 	}
 
-	println(countRed, countBlue, teamWon)
-
 	if teamWon != "" {
 		_, err = db.Exec(`
 			update games
