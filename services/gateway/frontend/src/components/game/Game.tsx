@@ -56,7 +56,7 @@ export default function Game() {
 	}
 
 	return <section class="game" data-finished={Storage.game.value?.status == "finished" ? "" : undefined}>
-		{Storage.game.value?.status == "finished" ? <h1>game finished! winner: {Storage.game.value?.team_won}</h1> : <></>}
+		{Storage.game.value?.status == "finished" ? <h1>game finished!<br />winner: {Storage.game.value?.team_won}</h1> : <></>}
 
 		<ul class="board">
 			{Storage.tiles.value.map(tile =>
