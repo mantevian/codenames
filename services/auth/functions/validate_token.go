@@ -33,6 +33,10 @@ func ValidateToken(payload []byte, db *sql.DB) types.ValidateTokenResponse {
 		return types.ValidateTokenFalse()
 	}
 
+	if !rows.Next() {
+		return types.ValidateTokenFalse()
+	}
+
 	rows.Close()
 
 	return res

@@ -13,8 +13,8 @@ func CreateGame(req types.CreateGameRequest, db *sql.DB) types.CreateGameRespons
 			(
 				id,
 				starting_team,
-				current_team,
-				current_role,
+				current_turn_team,
+				current_turn_role,
 				join_code,
 				language,
 				team_won,

@@ -7,6 +7,16 @@ export const Storage = {
 	game: sessionSignal<Game | undefined>("game", undefined),
 	tiles: sessionSignal<Tile[]>("tiles", []),
 	players: sessionSignal<Player[]>("players", []),
+	logout: () => {
+		Storage.token.value = undefined;
+		Storage.user.value = undefined;
+		Storage.game.value = undefined;
+		Storage.tiles.value = [];
+		Storage.players.value = [];
+	},
+	clear: () => {
+		Storage.logout();
+	}
 } as const;
 
 export const Me = computed(() => {
@@ -15,11 +25,11 @@ export const Me = computed(() => {
 });
 
 export const IsMyTurn = computed(() => {
-	if (!Storage.game.value?.current_role || !Storage.game.value?.current_team) {
+	if (!Storage.game.value?.current_turn_role || !Storage.game.value?.current_turn_team) {
 		return false;
 	}
 	
-	return Storage.game.value?.current_role == Me.value?.role && Storage.game.value?.current_team == Me.value?.team;
+	return Storage.game.value?.current_turn_role == Me.value?.role && Storage.game.value?.current_turn_team == Me.value?.team;
 });
 
 export function sessionSignal<T>(key: string, initial: T, serialize = JSON.stringify, deserialize = JSON.parse) {

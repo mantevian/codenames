@@ -11,7 +11,7 @@ import (
 )
 
 func StartGame(req types.StartGameRequest, db *sql.DB) types.StartGameResponse {
-	var game types.BasicGameResponse
+	var game types.Game
 	var playersReady []bool
 
 	rows, err := db.Query(`
@@ -160,14 +160,17 @@ func StartGame(req types.StartGameRequest, db *sql.DB) types.StartGameResponse {
 		update games
 		set
 			status = 'playing',
-			current_team = $2,
-			current_role = 'spymaster'
+			current_turn_team = $2,
+			current_turn_role = 'spymaster'
 		where
 			id = $1
 		`,
 		game.Id,
 		game.StartingTeam,
 	)
+
+	game.CurrentTurnTeam = game.StartingTeam
+	game.CurrentTurnRole = enums.RoleSpymaster
 
 	if err != nil {
 		return types.StartGameError("can't start game")

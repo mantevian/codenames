@@ -1,19 +1,19 @@
-create type team as enum ('red', 'blue');
-create type role as enum ('operative', 'spymaster');
+create type cn_team as enum ('red', 'blue');
+create type cn_role as enum ('operative', 'spymaster');
 create type game_status as enum ('waiting', 'playing', 'finished');
 create type tile as enum ('red', 'blue', 'neutral', 'assassin');
 create type language as enum ('en', 'ru');
 
 create table games (
 	id uuid,
-	starting_team team,
-	current_turn team,
-	current_role role,
+	starting_team cn_team,
+	current_turn_team cn_team,
+	current_turn_role cn_role,
 	join_code varchar(4),
 	language language,
-	team_won team NULL,
+	team_won cn_team,
 	status game_status,
-	finished_at timestamptz NULL,
+	finished_at timestamptz,
 	created_at timestamptz,
 
 	primary key (id)
@@ -32,8 +32,8 @@ create table players (
 	id uuid,
 	game_id uuid,
 	user_id uuid,
-	team team,
-	role role,
+	team cn_team,
+	role cn_role,
 	is_ready boolean,
 	created_at timestamptz,
 

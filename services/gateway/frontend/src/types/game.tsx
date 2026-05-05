@@ -4,8 +4,8 @@ export type Role = "operative" | "spymaster";
 export type Game = {
 	id: string;
 	starting_team: Team;
-	current_team: Team;
-	current_role: Role;
+	current_turn_team: Team;
+	current_turn_role: Role;
 	join_code: string;
 	language: string;
 	team_won: string;

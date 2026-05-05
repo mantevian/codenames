@@ -21,6 +21,8 @@ func GetGameState(req types.GetGameStateRequest, db *sql.DB) types.GetGameStateR
 			select
 				id,
 				starting_team,
+				current_turn_team,
+				current_turn_role,
 				join_code,
 				language,
 				team_won,
@@ -41,6 +43,8 @@ func GetGameState(req types.GetGameStateRequest, db *sql.DB) types.GetGameStateR
 	rows.Scan(
 		&game.Id,
 		&game.StartingTeam,
+		&game.CurrentTurnTeam,
+		&game.CurrentTurnRole,
 		&game.JoinCode,
 		&game.Language,
 		&game.TeamWon,

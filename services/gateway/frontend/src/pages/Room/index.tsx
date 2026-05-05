@@ -1,7 +1,7 @@
 import { useLocation, useRoute } from "preact-iso";
 import { useContext, useEffect, useState } from "preact/hooks";
 import { Me, Storage } from "../../storage/user";
-import { Message, WSContext } from "../../components/WebSocketProvider";
+import { Message, WSContext, wsReady } from "../../components/WebSocketProvider";
 import Game from "../../components/game/Game";
 import GameLobby from "../../components/game/GameLobby";
 
@@ -13,17 +13,19 @@ export default function Room() {
 	const [joinStatus, setJoinStatus] = useState<JoinStatus>("waiting");
 
 	useEffect(() => {
-		ws.request({
-			action: "join_game",
-			payload: {
-				"join_code": params.code
-			}
-		}).then(res => {
-			if (res.payload.message == "game already started") {
-				setJoinStatus("already_started");
-			} else {
-				setJoinStatus(res.payload.success ? "success" : "fail");
-			}
+		wsReady.then(() => {
+			ws.request({
+				action: "join_game",
+				payload: {
+					"join_code": params.code
+				}
+			}).then(res => {
+				if (res.payload.message == "game already started") {
+					setJoinStatus("already_started");
+				} else {
+					setJoinStatus(res.payload.success ? "success" : "fail");
+				}
+			});
 		});
 
 		ws.on("update_player_list", (msg: Message) => {

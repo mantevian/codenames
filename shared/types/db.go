@@ -8,16 +8,16 @@ import (
 )
 
 type Game struct {
-	Id           Uuid             `json:"id"`
-	StartingTeam enums.Team       `json:"starting_team"`
-	CurrentTeam  enums.Team       `json:"current_team"`
-	CurrentRole  enums.Role       `json:"current_role"`
-	JoinCode     JoinCode         `json:"join_code"`
-	Language     enums.Language   `json:"language"`
-	TeamWon      enums.Team       `json:"team_won"`
-	Status       enums.GameStatus `json:"status"`
-	FinishedAt   sql.NullTime     `json:"finished_at"`
-	CreatedAt    time.Time        `json:"created_at"`
+	Id              Uuid             `json:"id"`
+	StartingTeam    enums.Team       `json:"starting_team"`
+	CurrentTurnTeam enums.Team       `json:"current_turn_team"`
+	CurrentTurnRole enums.Role       `json:"current_turn_role"`
+	JoinCode        JoinCode         `json:"join_code"`
+	Language        enums.Language   `json:"language"`
+	TeamWon         enums.Team       `json:"team_won"`
+	Status          enums.GameStatus `json:"status"`
+	FinishedAt      sql.NullTime     `json:"finished_at"`
+	CreatedAt       time.Time        `json:"created_at"`
 }
 
 type User struct {
