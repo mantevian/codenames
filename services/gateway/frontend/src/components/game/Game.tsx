@@ -35,14 +35,6 @@ export default function Game() {
 	}
 
 	async function onClickTile(tile: Tile) {
-		const guessesLeft = Storage.turn.value?.guesses_left || 0;
-		const canSubmitGuess = IsMyTurn.value && Me.value?.role == "operative" && guessesLeft > 0;
-
-		if (canSubmitGuess) {
-			setSubmitResponse("not your turn");
-			return;
-		}
-
 		const res = await ws.request({
 			action: "submit_guess",
 			payload: {

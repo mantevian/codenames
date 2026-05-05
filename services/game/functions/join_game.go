@@ -77,7 +77,12 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 		}
 	}
 
-	if !isPlayerInThisGame {
+	if isPlayerInThisGame {
+		return types.JoinGameResponse{
+			Success: true,
+			Message: "game already started",
+		}
+	} else {
 		if gameStatus == enums.GameStatusPlaying {
 			return types.JoinGameError("this room is already playing")
 		}
