@@ -168,6 +168,10 @@ func GetGameState(req types.GetGameStateRequest, db *sql.DB) types.GetGameStateR
 	for _, id := range req.UserIds {
 		var res types.GetGameStateResponse
 
+		if game.Status == enums.GameStatusFinished {
+			tilesHidden = tiles
+		}
+
 		switch players[id].Role {
 		case enums.RoleOperative:
 			res = types.GetGameStateResponse{
