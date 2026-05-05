@@ -1,7 +1,7 @@
 :root {
 	font-family: sans-serif;
 
-	background: black;
+	background: rgb(32, 32, 33);
 	color: white;
 }
 
@@ -74,4 +74,42 @@ form {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+}
+
+input,
+button {
+	padding: 8px;
+	
+	border: 1px solid #dddddd;
+
+	min-width: 200px;
+}
+
+button,
+input[type='submit'] {
+	cursor: pointer;
+}
+
+a {
+	padding: 8px;
+
+	border: 1px solid #aabbff;
+	color: #aabbff;
+	background: #aabbff2c;
+
+	text-decoration: none;
+
+	width: fit-content;
+}
+
+header > nav {
+	display: flex;
+	align-items: center;
+}
+
+section.join-by-code {
+	display: flex;
+	gap: 16px;
+	flex-direction: row;
+	align-items: center;
 }

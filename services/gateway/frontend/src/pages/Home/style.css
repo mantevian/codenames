@@ -1,0 +1,4 @@
+section.home > nav {
+	display: flex;
+	gap: 16px;
+}

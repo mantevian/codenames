@@ -22,6 +22,7 @@ export type Player = {
 	role: Role;
 	is_ready: boolean;
 	name: string;
+	is_current_turn: boolean;
 };
 
 export type User = {

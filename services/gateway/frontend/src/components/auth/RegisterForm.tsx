@@ -33,17 +33,17 @@ export default function RegisterForm() {
 			<h2>Register</h2>
 			<form action="/api/v1/register" method="post" onSubmit={onSubmit}>
 				<label>
-					<p>username: </p>
+					<p>Username: </p>
 					<input type="text" name="name" required />
 				</label>
 
 				<label>
-					<p>password: </p>
+					<p>Password: </p>
 					<input type="password" name="password" required />
 				</label>
 
 				<label>
-					<p>repeat password: </p>
+					<p>Repeat password: </p>
 					<input type="password" name="password_confirm" required />
 				</label>
 				
@@ -51,7 +51,7 @@ export default function RegisterForm() {
 				<p ref={messageRef}></p>
 			</form>
 
-			<p>already have an account? <a href="/login">login</a></p>
+			<p>Already have an account? <a href="/login">Login</a></p>
 		</section>
 	</>;
 }

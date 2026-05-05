@@ -17,6 +17,8 @@ section.game {
 
 	display: flex;
 	flex-direction: row;
+
+	gap: 32px;
 }
 
 section.game[data-finished] {
@@ -107,7 +109,6 @@ li.tile[data-type='assassin'] {
 
 li.tile:hover {
 	background-image: linear-gradient(var(--tile-color), var(--tile-color));
-	scale: 1.1;
 	z-index: 1;
 }
 
@@ -117,4 +118,45 @@ li.tile[data-enabled]:hover {
 
 ul.board:has(li:hover) > li:not(:hover) {
 	opacity: 0.8;
+}
+
+section.game > div {
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+}
+
+ul.players {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+li.player {
+	padding: 12px;
+
+	background: var(--team);
+}
+
+li.player[data-team="red"] {
+	--team: var(--red-opacity);
+}
+
+li.player[data-team="blue"] {
+	--team: var(--blue-opacity);
+}
+
+li.player[data-current] {
+	outline: 3px solid #cccccc;
+}
+
+p.clue {
+	display: flex;
+	gap: 16px;
+	align-items: center;
+}
+
+p.clue > span {
+	font-size: 2em;
+	font-weight: 600;
 }

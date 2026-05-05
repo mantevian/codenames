@@ -1,18 +1,13 @@
-import { useContext, useEffect, useState } from "preact/hooks";
-import { IsMyTurn, Me, Storage } from "../../storage/user";
-import { Message, WSContext } from "../WebSocketProvider";
+import { useContext, useState } from "preact/hooks";
+import { IsMyTurn, Me, SortedPlayers, Storage } from "../../storage/user";
+import { WSContext } from "../WebSocketProvider";
 import "./style.css";
 import { TargetedEvent } from "preact";
-import { signal } from "@preact/signals";
 import { Tile } from "../../types/game";
 
 export default function Game() {
 	const ws = useContext(WSContext);
 	const [submitResponse, setSubmitResponse] = useState("");
-
-	useEffect(() => {
-
-	}, []);
 
 	async function submitClue(e: TargetedEvent<HTMLFormElement, SubmitEvent>) {
 		e.preventDefault();
@@ -66,41 +61,47 @@ export default function Game() {
 					data-type={tile.type ? tile.type : undefined}
 					data-revealed={tile.is_revealed ? "" : undefined}
 					onClick={() => onClickTile(tile)}
-					data-enabled={(IsMyTurn.value && Me.value?.role == "operative") ? "" : undefined}>
+					data-enabled={(IsMyTurn.value && Me.value?.role == "operative" && Storage.turn.value!.guesses_left > 0) ? "" : undefined}>
 					{tile.word}
 				</li>
 			)}
 		</ul>
 
 		<div>
-			<p>you: {Me.value?.team} {Me.value?.role}</p>
+			<ul class="players">
+				{SortedPlayers.value.filter(p => p != undefined).map(p =>
+					<li class="player" data-team={p.team} data-current={p.is_current_turn ? "" : undefined}>
+						<p>
+							<strong>{p.name}</strong>
+							{" "} / {p.role} {Me.value?.id == p.id ? <strong>(you)</strong> : <></>}
+						</p>
+					</li>
+				)}
+			</ul>
 
 			{Storage.turn.value?.clue_word ? <>
-				<p>clue: {Storage.turn.value?.clue_word} {Storage.turn.value?.clue_number}</p>
+				<p class="clue">clue: <span>{Storage.turn.value?.clue_word} {Storage.turn.value?.clue_number}</span></p>
 			</> : <></>
 			}
 
 			{IsMyTurn.value ?
 				<>
-					<p>it's your turn</p>
-
 					{Me.value?.role == "operative" ?
 						<>
-							<p>click tiles to guess</p>
-							<p>guesses left: {Storage.turn.value?.guesses_left}</p>
-							<button onClick={endTurn}>end turn</button>
+							<p>Click tiles to guess. Guesses left: <strong>{Storage.turn.value?.guesses_left}</strong></p>
+							<button onClick={endTurn}>End turn</button>
 						</>
 						:
 						<>
-							<p>submit your clue:</p>
 							<form onSubmit={submitClue}>
+								<p><strong>Submit your clue:</strong></p>
 								<label>
-									<p>word:</p>
+									<p>Word:</p>
 									<input type="text" name="word" />
 								</label>
 
 								<label>
-									<p>number:</p>
+									<p>Number:</p>
 									<input type="number" name="number" min={1} max={4} />
 								</label>
 
@@ -108,11 +109,10 @@ export default function Game() {
 							</form>
 						</>
 					}
-
-					<p>{submitResponse}</p>
-
 				</>
 				: ""}
+
+				<p>{submitResponse}</p>
 		</div>
 	</section>;
 }

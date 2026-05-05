@@ -40,13 +40,22 @@ export default function LoginForm() {
 		<section id="login">
 			<h2>Login</h2>
 			<form action="/api/v1/login" method="post" onSubmit={onSubmit}>
-				<input type="text" name="name" required />
-				<input type="password" name="password" required />
+				<label>
+					<p>Username: </p>
+					<input type="text" name="name" required />
+				</label>
+
+				<label>
+					<p>Password:</p>
+					<input type="password" name="password" required />
+				</label>
+
 				<input type="submit" />
+
 				<p ref={messageRef}></p>
 			</form>
 
-			<p>don't have an account? <a href="/register">register</a></p>
+			<p>Don't have an account? <a href="/register">Register</a></p>
 		</section>
 	</>;
 }

@@ -11,11 +11,11 @@ export function Lobby() {
 		<CreateGameForm />
 		<GameList />
 
-		<div>
+		<section class="join-by-code">
 			<p>connect by join code:</p>
 			<input type="text" name="join-code" maxLength={4} value={joinCode} onInput={(e) => setJoinCode(e.currentTarget.value)} />
 			<br />
 			{joinCode.length == 4 ? <a href={`/room/${joinCode}`}>join '{joinCode}'</a> : <></>}
-		</div>
+		</section>
 	</>
 }

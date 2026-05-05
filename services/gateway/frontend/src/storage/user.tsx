@@ -1,5 +1,5 @@
 import { computed, signal } from "@preact/signals";
-import { Game, Player, Tile, Turn, User } from "../types/game";
+import { Game, Player, Team, Tile, Turn, User } from "../types/game";
 
 export const Storage = {
 	token: sessionSignal<string | undefined>("token", undefined),
@@ -31,6 +31,34 @@ export const IsMyTurn = computed(() => {
 	}
 	
 	return Storage.game.value?.current_turn_role == Me.value?.role && Storage.game.value?.current_turn_team == Me.value?.team;
+});
+
+export const SortedPlayers = computed(() => {
+	const game = Storage.game.value;
+
+	if (!game) {
+		return [];
+	}
+
+	const startingTeam = game.starting_team;
+	const otherTeam: Team = startingTeam == "red" ? "blue" : "red";
+
+	const currentRole = game.current_turn_role;
+	const currentTeam = game.current_turn_team;
+
+	const players = Storage.players.value;
+
+	const orderedPlayers = [
+		players.find(p => p.team == startingTeam && p.role == "spymaster")!,
+		players.find(p => p.team == startingTeam && p.role == "operative")!,
+		players.find(p => p.team == otherTeam && p.role == "spymaster")!,
+		players.find(p => p.team == otherTeam && p.role == "operative")!
+	];
+
+	return orderedPlayers.map(p => ({
+		...p,
+		is_current_turn: p.role == currentRole && p.team == currentTeam
+	}));
 });
 
 export function sessionSignal<T>(key: string, initial: T, serialize = JSON.stringify, deserialize = JSON.parse) {

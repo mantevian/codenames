@@ -2,14 +2,16 @@ import AuthGuard from "../../components/auth/AuthGuard";
 import './style.css';
 
 export function Home() {
-	return <>
-		<h1>codenames</h1>
+	return <section class="home">
+		<h1>CODENAMES</h1>
+		
+		<nav>
+			<a href="/login">Login</a>
+			<a href="/register">Register</a>
 
-		<a href="/login">login</a>
-		<a href="/register">register</a>
-
-		<AuthGuard>
-			<a href="/lobby">lobby</a>
-		</AuthGuard>
-	</>;
+			<AuthGuard>
+				<a href="/lobby">Lobby</a>
+			</AuthGuard>
+		</nav>
+	</section>;
 }
