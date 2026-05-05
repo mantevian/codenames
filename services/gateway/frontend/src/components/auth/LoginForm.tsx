@@ -39,7 +39,7 @@ export default function LoginForm() {
 	return <>
 		<section id="login">
 			<h2>Login</h2>
-			<form action="/api/v1/login" method="post" onSubmit={onSubmit}>
+			<form onSubmit={onSubmit}>
 				<label>
 					<p>Username: </p>
 					<input type="text" name="name" required />

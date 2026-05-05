@@ -31,7 +31,7 @@ export default function RegisterForm() {
 	return <>
 		<section id="register">
 			<h2>Register</h2>
-			<form action="/api/v1/register" method="post" onSubmit={onSubmit}>
+			<form onSubmit={onSubmit}>
 				<label>
 					<p>Username: </p>
 					<input type="text" name="name" required />
