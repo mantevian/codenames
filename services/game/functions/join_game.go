@@ -25,8 +25,14 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 		`,
 		req.JoinCode,
 	)
+
+	if err != nil {
+		return types.JoinGameError("can't find game")
+	}
+
 	rows.Next()
 	rows.Scan(&gameId, &gameStatus)
+	rows.Close()
 
 	rows, err = db.Query(`
 			select
@@ -70,6 +76,8 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 		}
 	}
 
+	rows.Close()
+
 	if redPlayers+bluePlayers == 4 {
 		return types.JoinGameError("max 4 players")
 	}
@@ -82,7 +90,7 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 		team = enums.RandomTeam()
 	}
 
-	rows, err = db.Query(`
+	_, err = db.Exec(`
 		insert into players
 			(
 				id,
@@ -103,7 +111,6 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 				false,
 				now()
 			)
-		returning *
 		`,
 		gameId,
 		userId,

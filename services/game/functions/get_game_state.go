@@ -48,6 +48,7 @@ func GetGameState(req types.GetGameStateRequest, db *sql.DB) types.GetGameStateR
 		&game.FinishedAt,
 		&game.CreatedAt,
 	)
+	rows.Close()
 
 	rows, err = db.Query(`
 		select
@@ -81,6 +82,7 @@ func GetGameState(req types.GetGameStateRequest, db *sql.DB) types.GetGameStateR
 		)
 		players[player.UserId] = player
 	}
+	rows.Close()
 
 	rows, err = db.Query(`
 		select
@@ -119,9 +121,11 @@ func GetGameState(req types.GetGameStateRequest, db *sql.DB) types.GetGameStateR
 				Position:   tile.Position,
 				GameId:     tile.GameId,
 				IsRevealed: tile.IsRevealed,
+				Word:       tile.Word,
 			})
 		}
 	}
+	rows.Close()
 
 	fullResults := make(types.GetGameStateResponseMap)
 

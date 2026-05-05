@@ -32,6 +32,7 @@ func GetGameList(db *sql.DB) types.GetGameListResponse {
 		game.Status = enums.GameStatusWaiting
 		games = append(games, game)
 	}
+	rows.Close()
 
 	return types.GetGameListResponse{
 		Success: true,

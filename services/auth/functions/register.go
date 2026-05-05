@@ -34,6 +34,7 @@ func Register(payload []byte, db *sql.DB) types.RegisterResponse {
 
 	rows.Next()
 	rows.Scan(&user.Id, &user.Name, &user.Password, &user.CreatedAt)
+	rows.Close()
 
 	return types.RegisterResponse{
 		Success:   true,

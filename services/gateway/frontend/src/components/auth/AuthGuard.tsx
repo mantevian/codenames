@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "preact/hooks";
 import { WSContext, wsReady } from "../WebSocketProvider";
+import { Storage } from "../../storage/user";
 
 type AuthStatus = "waiting" | "success" | "fail";
 
@@ -24,7 +25,7 @@ export default function AuthGuard({ children }: { children?: any }) {
 		}).catch(() => {
 			setStatus("fail");
 		});
-	}, []);
+	}, [Storage.token.value]);
 
 	switch (status) {
 		case "success":

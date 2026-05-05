@@ -1,10 +1,11 @@
 import { computed, signal } from "@preact/signals";
-import { Game, Player, User } from "../types/game";
+import { Game, Player, Tile, User } from "../types/game";
 
 export const Storage = {
 	token: sessionSignal<string | undefined>("token", undefined),
 	user: sessionSignal<User | undefined>("user", undefined),
 	game: sessionSignal<Game | undefined>("game", undefined),
+	tiles: sessionSignal<Tile[]>("tiles", []),
 	players: sessionSignal<Player[]>("players", []),
 } as const;
 

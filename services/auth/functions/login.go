@@ -29,6 +29,7 @@ func Login(payload []byte, db *sql.DB) types.LoginResponse {
 
 	rows.Next()
 	rows.Scan(&user.Id, &user.Name, &user.Password, &user.CreatedAt)
+	rows.Close()
 
 	if !hash.CheckPassword(req.Password, user.Password) {
 		return types.LoginError("Incorrect credentials")

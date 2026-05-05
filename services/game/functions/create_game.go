@@ -46,6 +46,7 @@ func CreateGame(req types.CreateGameRequest, db *sql.DB) types.CreateGameRespons
 
 	rows.Next()
 	rows.Scan(&game.Id, &game.StartingTeam, &game.JoinCode, &game.Language, nil, &game.Status, nil, &game.CreatedAt)
+	rows.Close()
 
 	return types.CreateGameResponse{
 		Success: true,

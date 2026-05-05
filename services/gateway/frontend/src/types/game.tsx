@@ -23,3 +23,11 @@ export type User = {
 	id: string;
 	name: string;
 }
+
+export type Tile = {
+	position: number;
+	game_id: string;
+	type: string;
+	is_revealed: boolean;
+	word: string;
+}

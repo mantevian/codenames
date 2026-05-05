@@ -57,6 +57,7 @@ func GetGamePlayerList(req types.GetGamePlayerListRequest, db *sql.DB) types.Get
 		rows.Scan(&player.Id, &player.GameId, &player.UserId, &player.Team, &player.Role, &player.IsReady, &player.Name)
 		players = append(players, player)
 	}
+	rows.Close()
 
 	return types.GetGamePlayerListResponse{
 		Success:  true,

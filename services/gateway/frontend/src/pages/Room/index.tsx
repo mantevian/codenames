@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "preact/hooks";
 import { Me, Storage } from "../../storage/user";
 import { Message, WSContext } from "../../components/WebSocketProvider";
 import Game from "../../components/game/Game";
+import GameLobby from "../../components/game/GameLobby";
 
 type JoinStatus = "waiting" | "success" | "fail" | "already_started";
 
@@ -32,6 +33,11 @@ export default function Room() {
 		ws.on("game_started", () => {
 			setJoinStatus("already_started");
 		});
+
+		ws.on("update_game_state", (msg: Message) => {
+			Storage.game.value = msg.payload.game;
+			Storage.tiles.value = msg.payload.tiles;
+		});
 	}, []);
 
 	switch (joinStatus) {
@@ -42,6 +48,9 @@ export default function Room() {
 			return <section class="game-lobby">
 				<h1>joining...</h1>
 			</section>;
+
+		case "success":
+			return <GameLobby />;
 
 		default:
 			return <section class="lobby">

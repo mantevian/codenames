@@ -22,12 +22,13 @@ func QuitGame(req types.QuitGameRequest, db *sql.DB) types.QuitGameResponse {
 	)
 	rows.Next()
 	rows.Scan(&gameId, &joinCode)
+	rows.Close()
 
 	if err != nil {
 		return types.QuitGameError("can't find game")
 	}
 
-	rows, err = db.Query(`
+	_, err = db.Exec(`
 		delete from players
 		where id = $1
 		`,

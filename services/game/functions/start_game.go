@@ -36,6 +36,7 @@ func StartGame(req types.StartGameRequest, db *sql.DB) types.StartGameResponse {
 
 	rows.Next()
 	rows.Scan(&game.Id, &game.StartingTeam, &game.JoinCode, &game.Language, &game.Status, &game.CreatedAt)
+	rows.Close()
 
 	if game.Status != enums.GameStatusWaiting {
 		return types.StartGameError("game already started")
@@ -63,6 +64,8 @@ func StartGame(req types.StartGameRequest, db *sql.DB) types.StartGameResponse {
 			return types.StartGameError("not all players are ready to start")
 		}
 	}
+
+	rows.Close()
 
 	if len(playersReady) != 4 {
 		return types.StartGameError("need 4 players to start")
@@ -102,6 +105,8 @@ func StartGame(req types.StartGameRequest, db *sql.DB) types.StartGameResponse {
 		rows.Scan(&word)
 		words = append(words, word)
 	}
+
+	rows.Close()
 
 	var newRows []string
 

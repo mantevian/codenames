@@ -2,10 +2,12 @@ import { TargetedEvent } from "preact";
 import { useContext, useRef } from "preact/hooks";
 import { WSContext } from "../WebSocketProvider";
 import { Storage } from "../../storage/user";
+import { useLocation } from "preact-iso";
 
 export default function LoginForm() {
 	const ws = useContext(WSContext);
 	const messageRef = useRef<HTMLParagraphElement>(null);
+	const { route } = useLocation();
 
 	async function onSubmit(e: TargetedEvent<HTMLFormElement, SubmitEvent>) {
 		e.preventDefault();
@@ -18,11 +20,11 @@ export default function LoginForm() {
 			payload: entries
 		});
 
-		const { user_id, token, message } = res.payload;
+		const { user_id, token, message, success } = res.payload;
 
 		messageRef!.current!.innerHTML = message;
 
-		if (!token) {
+		if (!success || !token) {
 			return;
 		}
 
@@ -31,6 +33,7 @@ export default function LoginForm() {
 			id: user_id,
 			name: formData.get("name")!.toString()
 		};
+		route("/lobby");
 	}
 
 	return <>
