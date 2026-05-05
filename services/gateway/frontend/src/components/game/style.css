@@ -19,6 +19,18 @@ section.game {
 	flex-direction: row;
 }
 
+section.game[data-finished] {
+	pointer-events: none;
+}
+
+section.game[data-finished] > div {
+	display: none;
+}
+
+section.game > h1 {
+	order: 2;
+}
+
 ul.board {
 	flex: 1;
 	display: grid;

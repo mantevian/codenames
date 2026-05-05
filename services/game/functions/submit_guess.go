@@ -224,6 +224,70 @@ func SubmitGuess(req types.SubmitGuessRequest, db *sql.DB) types.SubmitGuessResp
 		return types.SubmitGuessError("cannot update tile")
 	}
 
+	var countRed int
+	var countBlue int
+
+	rows, err = db.Query(`
+			select
+				count(*) filter (where type = 'red' and is_revealed = true) as red_count,
+				count(*) filter (where type = 'blue' and is_revealed = true) as blue_count
+			from tiles
+			where
+				game_id = $1
+		`,
+		game.Id,
+	)
+
+	if err != nil {
+		return types.SubmitGuessError("tiles not found")
+	}
+
+	rows.Next()
+	rows.Scan(
+		&countRed,
+		&countBlue,
+	)
+	rows.Close()
+
+	var teamWon enums.Team
+
+	if tile.Type == enums.TileAssassin {
+		if player.Team == enums.TeamRed {
+			teamWon = enums.TeamBlue
+		} else {
+			teamWon = enums.TeamRed
+		}
+	}
+
+	if countRed == 9 {
+		teamWon = enums.TeamRed
+	}
+
+	if countBlue == 9 {
+		teamWon = enums.TeamBlue
+	}
+
+	println(countRed, countBlue, teamWon)
+
+	if teamWon != "" {
+		_, err = db.Exec(`
+			update games
+			set
+				status = 'finished',
+				team_won = $2,
+				finished_at = now()
+			where
+				id = $1
+		`,
+			game.Id,
+			teamWon,
+		)
+
+		if err != nil {
+			return types.SubmitGuessError("cannot update tile")
+		}
+	}
+
 	return types.SubmitGuessResponse{
 		Success:  true,
 		Message:  "guess submitted!",

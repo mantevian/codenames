@@ -55,6 +55,13 @@ func JoinGame(req types.JoinGameRequest, db *sql.DB) types.JoinGameResponse {
 		rows.Scan(&playerUserId, &playerTeam)
 
 		if playerUserId == req.UserId {
+			if gameStatus == enums.GameStatusFinished {
+				return types.JoinGameResponse{
+					Success: false,
+					Message: "game finished",
+				}
+			}
+
 			if gameStatus != enums.GameStatusWaiting {
 				return types.JoinGameResponse{
 					Success: true,

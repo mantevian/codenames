@@ -62,7 +62,9 @@ export default function Game() {
 		});
 	}
 
-	return <section class="game">
+	return <section class="game" data-finished={Storage.game.value?.status == "finished" ? "" : undefined}>
+		{Storage.game.value?.status == "finished" ? <h1>game finished! winner: {Storage.game.value?.team_won}</h1> : <></>}
+
 		<ul class="board">
 			{Storage.tiles.value.map(tile =>
 				<li
@@ -113,7 +115,7 @@ export default function Game() {
 							</form>
 						</>
 					}
-					
+
 					<p class="error">{submitResponse}</p>
 
 				</>
