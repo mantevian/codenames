@@ -13,6 +13,8 @@ func CreateGame(req types.CreateGameRequest, db *sql.DB) types.CreateGameRespons
 			(
 				id,
 				starting_team,
+				current_team,
+				current_role,
 				join_code,
 				language,
 				team_won,
@@ -24,6 +26,8 @@ func CreateGame(req types.CreateGameRequest, db *sql.DB) types.CreateGameRespons
 			(
 				gen_random_uuid(),
 				$1,
+				NULL,
+				NULL,
 				$2,
 				$3,
 				NULL,

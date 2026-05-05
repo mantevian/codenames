@@ -159,11 +159,14 @@ func StartGame(req types.StartGameRequest, db *sql.DB) types.StartGameResponse {
 	_, err = db.Exec(`
 		update games
 		set
-			status = 'playing'
+			status = 'playing',
+			current_team = $2,
+			current_role = 'spymaster'
 		where
 			id = $1
 		`,
 		game.Id,
+		game.StartingTeam,
 	)
 
 	if err != nil {

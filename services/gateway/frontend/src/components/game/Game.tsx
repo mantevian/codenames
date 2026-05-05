@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "preact/hooks";
-import { Storage } from "../../storage/user";
+import { IsMyTurn, Me, Storage } from "../../storage/user";
 import { Message, WSContext } from "../WebSocketProvider";
 import "./style.css";
 
@@ -11,8 +11,6 @@ export default function Game() {
 	}, []);
 
 	return <section class="game">
-		<h1>game</h1>
-
 		<ul class="board">
 			{Storage.tiles.value.map(tile =>
 				<li class="tile" key={tile.position} data-type={tile.type ? tile.type : undefined} data-revealed={tile.is_revealed ? "" : undefined}>
@@ -20,5 +18,16 @@ export default function Game() {
 				</li>
 			)}
 		</ul>
+
+		<div>
+			<p>your team: {Me.value?.team}</p>
+			<p>your role: {Me.value?.role}</p>
+
+			{IsMyTurn.value ?
+				<>
+					<p>it's your turn</p>
+				</>
+				: ""}
+		</div>
 	</section>;
 }

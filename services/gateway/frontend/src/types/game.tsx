@@ -1,6 +1,11 @@
+export type Team = "red" | "blue";
+export type Role = "operative" | "spymaster";
+
 export type Game = {
 	id: string;
-	starting_team: string;
+	starting_team: Team;
+	current_team: Team;
+	current_role: Role;
 	join_code: string;
 	language: string;
 	team_won: string;
@@ -13,8 +18,8 @@ export type Player = {
 	id: string;
 	game_id: string;
 	user_id: string;
-	team: "red" | "blue";
-	role: "operative" | "spymaster";
+	team: Team;
+	role: Role;
 	is_ready: boolean;
 	name: string;
 };

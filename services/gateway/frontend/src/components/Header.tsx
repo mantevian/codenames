@@ -13,7 +13,7 @@ export function Header() {
 				</a>
 				
 				<AuthGuard>
-					<p>Welcome, {Storage.user.value?.name}</p>
+					<p>{Storage.user.value?.name}</p>
 				</AuthGuard>
 			</nav>
 		</header>

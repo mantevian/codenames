@@ -1,5 +1,22 @@
+:root {
+	--red: oklch(0.6 0.2 33);
+	--blue: oklch(0.6 0.2 220);
+	--neutral: oklch(0.5 0.1 130);
+	--assassin: oklch(0.7 0.4 310);
+	--gray: oklch(0.4 0 0);
+
+	--red-opacity: oklch(0.6 0.2 33 / 0.6);
+	--blue-opacity: oklch(0.6 0.2 220 / 0.6);
+	--neutral-opacity: oklch(0.5 0.1 130 / 0.6);
+	--assassin-opacity: oklch(0.7 0.4 310 / 0.6);
+	--gray-opacity: oklch(0.4 0 0 / 0.6);
+}
+
 section.game {
 	flex: 1;
+
+	display: flex;
+	flex-direction: row;
 }
 
 ul.board {
@@ -14,6 +31,8 @@ ul.board {
 }
 
 li.tile {
+	position: relative;
+
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -25,37 +44,24 @@ li.tile {
 	border-style: solid;
 	border-color: #ffffff #afafaf #535353 #a2a2a2;
 
+	background-image: linear-gradient(var(--tile-color), var(--tile-color));
+
+	font-weight: 600;
 	font-size: 12px;
+
+	box-shadow: inset 0 0 0 4px black;
+
+	transition: scale 0.3s ease, opacity 0.3s ease;
+}
+
+li.tile:not([data-type]) {
+	--tile-color: var(--gray);
+	--tile-color-opacity: var(--gray-opacity);
 }
 
 li.tile:not([data-revealed]) {
 	border-color: #cccccc #a6a6a6 #696969 #969696;
-}
 
-:root {
-	--red: oklch(0.6 0.2 33);
-	--blue: oklch(0.6 0.2 220);
-	--neutral: oklch(0.6 0.2 130);
-	--assassin: oklch(0.6 0.2 310);
-
-	--red-opacity: oklch(0.6 0.2 33 / 0.6);
-	--blue-opacity: oklch(0.6 0.2 220 / 0.6);
-	--neutral-opacity: oklch(0.6 0.2 130 / 0.6);
-	--assassin-opacity: oklch(0.6 0.2 310 / 0.6);
-}
-
-li.tile {
-	position: relative;
-
-	background-image: linear-gradient(var(--tile-color), var(--tile-color));
-	font-weight: 600;
-
-	transition: opacity 0.3s ease;
-
-	box-shadow: inset 0 0 0 4px black;
-}
-
-li.tile:not([data-revealed]) {
 	background-image: repeating-linear-gradient(-45deg, var(--tile-color-opacity) 0%, var(--tile-color-opacity) 15%, black 15%, black 25%);
 }
 
@@ -81,8 +87,10 @@ li.tile[data-type='assassin'] {
 
 li.tile:hover {
 	background-image: linear-gradient(var(--tile-color), var(--tile-color));
+	scale: 1.3;
+	z-index: 1;
 }
 
 ul.board:has(li:hover) > li:not(:hover) {
-	opacity: 0.7;
+	opacity: 0.8;
 }

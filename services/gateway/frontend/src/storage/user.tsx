@@ -14,6 +14,14 @@ export const Me = computed(() => {
 	return Storage.players.value.find(p => p.user_id == userId);
 });
 
+export const IsMyTurn = computed(() => {
+	if (!Storage.game.value?.current_role || !Storage.game.value?.current_team) {
+		return false;
+	}
+	
+	return Storage.game.value?.current_role == Me.value?.role && Storage.game.value?.current_team == Me.value?.team;
+});
+
 export function sessionSignal<T>(key: string, initial: T, serialize = JSON.stringify, deserialize = JSON.parse) {
 	try {
 		const raw = sessionStorage.getItem(key);

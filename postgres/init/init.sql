@@ -7,6 +7,8 @@ create type language as enum ('en', 'ru');
 create table games (
 	id uuid,
 	starting_team team,
+	current_turn team,
+	current_role role,
 	join_code varchar(4),
 	language language,
 	team_won team NULL,

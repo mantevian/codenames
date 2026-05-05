@@ -10,6 +10,8 @@ import (
 type Game struct {
 	Id           Uuid             `json:"id"`
 	StartingTeam enums.Team       `json:"starting_team"`
+	CurrentTeam  enums.Team       `json:"current_team"`
+	CurrentRole  enums.Role       `json:"current_role"`
 	JoinCode     JoinCode         `json:"join_code"`
 	Language     enums.Language   `json:"language"`
 	TeamWon      enums.Team       `json:"team_won"`
