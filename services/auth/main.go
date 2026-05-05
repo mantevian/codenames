@@ -23,7 +23,7 @@ func HandleRPC(action string, payload []byte) ([]byte, error) {
 		res := functions.Login(payload, db)
 		return json.Marshal(res)
 	case "validate_token":
-		res := functions.ValidateToken(payload)
+		res := functions.ValidateToken(payload, db)
 		return json.Marshal(res)
 	default:
 		return nil, fmt.Errorf("unknown action: %s", action)
